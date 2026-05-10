@@ -1,5 +1,4 @@
 export default function JudgementTable({ judgements, onEdit, onDelete }) {
-  // Helper to get color based on status
   const getStatusBadge = (status) => {
     const map = {
       DRAFT: "bg-secondary",
