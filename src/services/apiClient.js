@@ -2,13 +2,12 @@ import axios from "axios";
 import { getToken } from "../utils/token";
 
 const apiClient = axios.create({
-  baseURL: "", // ✅ API Gateway
+  baseURL: "http://localhost:9999", // API Gateway URL
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// ✅ ADD JWT TO EVERY REQUEST
 apiClient.interceptors.request.use(
   (config) => {
     const token = getToken();
