@@ -28,5 +28,5 @@ export const decodeToken = () => {
 };
 
 // ✅ ADD THIS
-export const getJudgeId = () =>
-  decodeToken()?.userId || decodeToken()?.judgeId;
+export const getUserId = () =>
+  decodeToken()?.userId || decodeToken()?.judgeId || decodeToken()?.id;
