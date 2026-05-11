@@ -4,7 +4,7 @@
 
 // ⚠️ TEMPORARY DEVELOPMENT TOKEN (REMOVE LATER)
 const DEV_TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYXVyYWJoa3VtYmhhcjAxMUBnbWFpbC5jb20iLCJyb2xlIjoiSlVER0UiLCJpYXQiOjE3NzgzOTMxMjYsImV4cCI6MTc3ODQyOTEyNn0._D8pavLUkciSAFaDul7HETp1gGFppyLGn7gNRblXL24";
+  "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdXN0aWNlLmdvdi5ub3RpZnlAZ21haWwuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzc4NDkyMTE2LCJleHAiOjE3Nzg1MjgxMTZ9.0HBh70XTsxYZqpYDe9g1FneQ48zOZofU98R8gevVEEk";
 
 export const getToken = () =>
   localStorage.getItem("token") || DEV_TOKEN;
