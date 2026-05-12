@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Register from './modules/Identity-AccessManagement/Register';
 import Login from './modules/Identity-AccessManagement/Login';
-// import AppRoutes from './routes/AppRoutes';
+import AppRoutes from './routes/AppRoutes';
 import AdminPanel from './components/AdminPanel'; // We'll create this
 import Judgements from './modules/judgment-order/pages/Judgements';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -35,27 +35,7 @@ const AppContent = () => {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-      <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
-
-      {/* Protected Routes */}
-      {/* <Route path="/dashboard" element={
-        <ProtectedRoute>
-          {user?.role === 'ADMIN' ? <AdminPanel /> : <AppRoutes />}
-        </ProtectedRoute>
-      } /> */}
-
-      <Route path="/judgeorder" element={<DashboardLayout />}>
-        <Route path="judgements" element={<Judgements />} />
-        <Route path="court-orders" element={<CourtOrders />} />
-      </Route>
-
-
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
-    </Routes>
+    <AppRoutes ProtectedRoute={ProtectedRoute} isAuthenticated={isAuthenticated} user={user} />
   );
 };
 

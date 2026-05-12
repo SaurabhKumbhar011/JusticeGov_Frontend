@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getToken, removeToken } from '../utils/token';
 import { decodeToken } from '../utils/jwtUtils';
-
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -16,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const token = getToken();
     if (token) {
