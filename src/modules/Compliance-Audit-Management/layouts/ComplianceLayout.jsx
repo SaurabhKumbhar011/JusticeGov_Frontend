@@ -5,6 +5,9 @@ const complianceMenu = [
   { label: '📊 Dashboard',           path: '/compliance/dashboard' },
   { label: '📋 Compliance Records',  path: '/compliance/records' },
   { label: '➕ Add Record',           path: '/compliance/records/new' },
+];
+
+const auditorMenu = [
   { label: '🔍 Audits',              path: '/compliance/audits' },
   { label: '➕ New Audit',            path: '/compliance/audits/new' },
 ];
@@ -22,6 +25,12 @@ export default function ComplianceLayout() {
 
   const linkClass = ({ isActive }) =>
     `nav-link px-3 py-2 rounded-3 mb-1 fw-semibold ${isActive ? 'bg-white text-dark' : 'text-white-50'}`;
+
+  const menuItems = role === 'AUDITOR'
+    ? auditorMenu
+    : role === 'COMPLIANCE_OFFICER'
+      ? complianceMenu
+      : [...complianceMenu, ...auditorMenu];
 
   return (
     <div className="d-flex vh-100 overflow-hidden" style={{ background: '#f0f4f8' }}>
@@ -47,7 +56,7 @@ export default function ComplianceLayout() {
 
         {/* Nav */}
         <nav className="nav nav-pills flex-column mb-auto">
-          {complianceMenu.map((item) => (
+          {menuItems.map((item) => (
             <NavLink key={item.path} to={item.path} end className={linkClass}>
               {item.label}
             </NavLink>

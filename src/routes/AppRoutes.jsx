@@ -36,6 +36,7 @@ function RoleRedirect() {
   if (role === "CITIZEN")            return <Navigate to="/citizenregister/my-profile" replace />;
   if (role === "LAWYER")             return <Navigate to="/lawyerregister/my-profile" replace />;
   if (role === "COMPLIANCE_OFFICER") return <Navigate to="/compliance/dashboard" replace />;
+  if (role === "AUDITOR")            return <Navigate to="/compliance/audits" replace />;
   if (role === "JUDGE")              return <Navigate to="/judgements" replace />;
   if (role === "ADMIN" || role === "REGISTRAR") return <Navigate to="/register/citizens" replace />;
 
@@ -86,11 +87,26 @@ export default function AppRoutes() {
       {/* Compliance Officer module */}
       <Route path="/compliance" element={<ComplianceLayout />}>
         <Route index element={<Navigate to="/compliance/dashboard" replace />} />
-        <Route path="dashboard"    element={<ComplianceDashboard />} />
-        <Route path="records"      element={<ComplianceListPage />} />
-        <Route path="records/new"  element={<ComplianceNewPage />} />
-        <Route path="audits"       element={<AuditListPage />} />
-        <Route path="audits/new"   element={<AuditNewPage />} />
+        <Route
+          path="dashboard"
+          element={getUserRole() === 'AUDITOR' ? <Navigate to="/compliance/audits" replace /> : <ComplianceDashboard />}
+        />
+        <Route
+          path="records"
+          element={getUserRole() === 'AUDITOR' ? <Navigate to="/compliance/audits" replace /> : <ComplianceListPage />}
+        />
+        <Route
+          path="records/new"
+          element={getUserRole() === 'AUDITOR' ? <Navigate to="/compliance/audits" replace /> : <ComplianceNewPage />}
+        />
+        <Route
+          path="audits"
+          element={getUserRole() === 'COMPLIANCE_OFFICER' ? <Navigate to="/compliance/dashboard" replace /> : <AuditListPage />}
+        />
+        <Route
+          path="audits/new"
+          element={getUserRole() === 'COMPLIANCE_OFFICER' ? <Navigate to="/compliance/dashboard" replace /> : <AuditNewPage />}
+        />
       </Route>
 
       {/* Root redirect */}

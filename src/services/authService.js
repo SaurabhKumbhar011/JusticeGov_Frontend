@@ -3,7 +3,7 @@ import { setToken, removeToken } from "../utils/token";
 
 export const login = async (credentials) => {
   const response = await apiClient.post("/auth/login", credentials);
-  return response.data; // Return the full response, including token
+  return response.data?.data ?? response.data;
 };
 
 export const logout = () => {

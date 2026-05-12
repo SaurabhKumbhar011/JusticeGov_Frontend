@@ -2,11 +2,16 @@
    TOKEN ACCESS (DEV SAFE)
    ========================= */
 
+const sanitizeToken = (token) => {
+  if (!token || typeof token !== 'string') return null;
+  return token.trim().replace(/^"|"$/g, '').replace(/^'|'$/g, '');
+};
+
 // ⚠️ NO DEFAULT DEV TOKEN - only use the actual login token
 const DEV_TOKEN = null;
 
 export const getToken = () =>
-  localStorage.getItem("token");
+  sanitizeToken(localStorage.getItem("token"));
 
 /* =========================
    ✅ TOKEN DECODING (FIXED)
@@ -40,7 +45,7 @@ export const getJudgeId = () =>
   decodeToken()?.userId || decodeToken()?.judgeId || null;
 
 export const setToken = (token) => {
-  localStorage.setItem("token", token);
+  localStorage.setItem("token", sanitizeToken(token));
 };
 
 export const removeToken = () => {

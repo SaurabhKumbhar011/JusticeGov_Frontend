@@ -9,8 +9,10 @@
 //   }
 // };
 
+import { getToken } from './token';
+
 export const decodeToken = () => {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return null;
 
   try {

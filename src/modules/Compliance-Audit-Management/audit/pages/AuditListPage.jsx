@@ -5,6 +5,33 @@ import { getAllAudits, updateAudit } from '../axios/auditApi';
 const STATUS_COLORS  = { OPEN: 'warning', IN_PROGRESS: 'primary', CLOSED: 'success' };
 const STATUS_OPTIONS = ['OPEN', 'IN_PROGRESS', 'CLOSED'];
 
+const formatDate = (value) => value ? new Date(value).toLocaleDateString() : '—';
+
+const toIsoDate = (value) => {
+  if (!value) return '';
+  if (typeof value !== 'string') value = value.toString();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const normalizeAudit = (audit) => ({
+  auditId: audit.auditId ?? audit.id ?? audit.auditID ?? '—',
+  officerId: audit.officerId ?? audit.officerID ?? audit.auditorId ?? '—',
+  complianceId: audit.complianceId ?? audit.complianceID ?? audit.recordId ?? '—',
+  scope: audit.scope ?? audit.type ?? '—',
+  findings: audit.findings ?? audit.notes ?? '—',
+  date: formatDate(audit.date ?? audit.createdDate ?? audit.updatedDate),
+  dateValue: toIsoDate(audit.date ?? audit.createdDate ?? audit.updatedDate),
+  status: audit.status ?? audit.state ?? 'OPEN',
+  createdDate: audit.createdDate,
+  lastModifiedDate: audit.lastModifiedDate ?? audit.updatedDate,
+});
+
 export default function AuditListPage() {
   const [audits, setAudits]     = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -18,7 +45,7 @@ export default function AuditListPage() {
     setLoading(true); setError('');
     try {
       const res = await getAllAudits();
-      setAudits(res.data || []);
+      setAudits(Array.isArray(res.data) ? res.data : res.data?.data ?? []);
     } catch (e) {
       setError(e?.response?.data?.message || 'Failed to load audits.');
     } finally { setLoading(false); }
@@ -29,7 +56,8 @@ export default function AuditListPage() {
   const handleSave = async () => {
     setSaving(true); setMsg('');
     try {
-      await updateAudit(selected.auditId, { ...editForm, officerId: Number(editForm.officerId), complianceId: Number(editForm.complianceId) });
+      const auditId = selected?.auditId ?? selected?.id;
+      await updateAudit(auditId, { ...editForm, officerId: Number(editForm.officerId), complianceId: Number(editForm.complianceId) });
       setMsg('Audit updated successfully.');
       setEditForm(null);
       fetchAll();
@@ -37,6 +65,8 @@ export default function AuditListPage() {
       setMsg(e?.response?.data?.message || 'Update failed.');
     } finally { setSaving(false); }
   };
+
+  const normalizedAudits = audits.map(normalizeAudit);
 
   return (
     <div>
@@ -73,7 +103,7 @@ export default function AuditListPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {audits.map((a) => (
+                      {normalizedAudits.map((a) => (
                         <tr key={a.auditId} className={selected?.auditId === a.auditId ? 'table-active' : ''}>
                           <td className="ps-4 text-muted small">#{a.auditId}</td>
                           <td className="fw-semibold small">{a.officerId}</td>
@@ -111,7 +141,7 @@ export default function AuditListPage() {
                 <div className="d-flex gap-2">
                   {!editForm && (
                     <button className="btn btn-sm btn-dark fw-semibold"
-                      onClick={() => setEditForm({ officerId: selected.officerId, complianceId: selected.complianceId, scope: selected.scope, findings: selected.findings, date: selected.date, status: selected.status })}>
+                      onClick={() => setEditForm({ officerId: selected.officerId, complianceId: selected.complianceId, scope: selected.scope, findings: selected.findings, date: selected.dateValue, status: selected.status })}>
                       ✏️ Edit
                     </button>
                   )}

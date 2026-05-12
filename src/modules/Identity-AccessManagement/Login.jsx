@@ -29,10 +29,18 @@ const Login = () => {
         try {
             // 1. Authenticate and get the token
             const data = await authLogin(credentials);
-            const token = data.token;
+                        const rawToken = typeof data === 'string'
+                            ? data
+                            : data.token ?? data.accessToken ?? data.access_token ?? data.jwt ?? data.authToken ?? data?.data?.token ?? data?.data?.accessToken;
+                        if (!rawToken) {
+                            throw new Error('Login response did not include an auth token.');
+                        }
+            const token = rawToken?.toString().trim().replace(/^\"|\"$/g, '').replace(/^\'|\'$/g, '');
             
             // 2. Decode the token to get role and currentUserId
-            const payload = JSON.parse(atob(token.split('.')[1]));
+            const encoded = token.split('.')[1] || '';
+            const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(atob(base64));
             const role = payload.role;   
             const currentUserId = payload.userId || payload.id || payload.sub; 
 
@@ -41,14 +49,15 @@ const Login = () => {
             // 3. Store token globally
             login(token); 
 
-            // 🚀 THE FIX: If they are Admin, Registrar, Judge, or Officer -> Skip DB check!
+            // 🚀 THE FIX: If they are Admin, Registrar, Judge, Officer, or Auditor -> Skip DB check!
             if (role === "ADMIN" || role === "REGISTRAR") {
                 navigate("/register/citizens");
             } else if (role === "JUDGE") {
                 navigate("/judgements");
             } else if (role === "COMPLIANCE_OFFICER") {
                 navigate("/compliance/dashboard");
-                
+            } else if (role === "AUDITOR") {
+                navigate("/compliance/audits");
             } else if (role === "CITIZEN") {
                 // 👤 Only Citizens do the DB check
                 try {
