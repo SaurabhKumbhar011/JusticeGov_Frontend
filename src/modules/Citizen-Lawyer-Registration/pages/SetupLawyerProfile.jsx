@@ -7,9 +7,8 @@ export default function SetupLawyerProfile() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   
-  // 1. Component State
   const [formData, setFormData] = useState({
-    userId: '', // Captured silently from token
+    userId: '', 
     name: '',
     contactInfo: '',
     dob: '',
@@ -19,7 +18,6 @@ export default function SetupLawyerProfile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 2. Extract UserID from token silently on load
   useEffect(() => {
     const decoded = decodeToken();
     if (decoded) {
@@ -30,23 +28,38 @@ export default function SetupLawyerProfile() {
     }
   }, []);
 
-  // 3. Handlers
+  const validateAge = (birthDate) => {
+    const today = new Date();
+    const dob = new Date(birthDate);
+    if (dob >= today.setHours(0,0,0,0)) return "Date of Birth must be in the past.";
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+    if (age < 18) return "Lawyers must be at least 18 years old.";
+    return null;
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
+    const ageError = validateAge(formData.dob);
+    if (ageError) {
+      setError(ageError);
+      return;
+    }
+
+    setLoading(true);
     try {
-      // formData automatically includes the silent userId
       await registerLawyer(formData, token);
       alert("Lawyer Profile setup successful!");
       navigate('/lawyerregister/my-profile'); 
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create profile. You might already have one.");
+      setError(err.response?.data?.message || "Failed to create profile.");
     } finally {
       setLoading(false);
     }
@@ -59,14 +72,11 @@ export default function SetupLawyerProfile() {
           <div className="card border-0 shadow-lg rounded-4">
             <div className="card-body p-5">
               <h3 className="fw-bold text-primary mb-2">⚖️ Complete Lawyer Profile</h3>
-              <p className="text-muted mb-4 small">Please provide your professional details to access the JusticeGov portal.</p>
+              <p className="text-muted mb-4 small">Please provide your professional details to access the portal.</p>
 
               {error && <div className="alert alert-danger py-2 small">{error}</div>}
 
               <form onSubmit={handleSubmit}>
-                
-                {/* 🚀 REMOVED the User ID input field here. It is handled silently in the state! */}
-
                 <div className="mb-3">
                   <label className="form-label small fw-bold">Full Legal Name</label>
                   <input type="text" name="name" className="form-control" placeholder="Enter full legal name" 
@@ -92,9 +102,7 @@ export default function SetupLawyerProfile() {
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100 fw-bold py-2 rounded-3" disabled={loading}>
-                  {loading ? (
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                  ) : 'Initialize Profile'}
+                  {loading ? <span className="spinner-border spinner-border-sm me-2"></span> : 'Initialize Profile'}
                 </button>
               </form>
             </div>

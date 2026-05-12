@@ -7,9 +7,8 @@ export default function SetupCitizenProfile() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   
-  // 1. Component State
   const [formData, setFormData] = useState({
-    userId: '', // Captured silently
+    userId: '', 
     name: '',
     contactInfo: '',
     dob: '',
@@ -20,7 +19,6 @@ export default function SetupCitizenProfile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 2. Extract UserID from token silently on load
   useEffect(() => {
     const decoded = decodeToken();
     if (decoded) {
@@ -31,23 +29,44 @@ export default function SetupCitizenProfile() {
     }
   }, []);
 
-  // 3. Handlers
+  // 🚀 Logic to validate that user is 18+ and date is not future/present
+  const validateAge = (birthDate) => {
+    const today = new Date();
+    const dob = new Date(birthDate);
+    
+    if (dob >= today.setHours(0,0,0,0)) return "Date of Birth must be in the past.";
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    if (age < 18) return "You must be at least 18 years old to register.";
+    return null;
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
+    const ageError = validateAge(formData.dob);
+    if (ageError) {
+      setError(ageError);
+      return;
+    }
+
+    setLoading(true);
     try {
-      // formData automatically includes the silent userId
       await registerCitizen(formData, token);
       alert("Profile setup successful!");
       navigate('/citizenregister/my-profile'); 
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create profile. You might already have one.");
+      setError(err.response?.data?.message || "Failed to create profile.");
     } finally {
       setLoading(false);
     }
@@ -65,8 +84,6 @@ export default function SetupCitizenProfile() {
               {error && <div className="alert alert-danger py-2 small">{error}</div>}
 
               <form onSubmit={handleSubmit}>
-                {/* REMOVED the User ID input field here. It is handled silently in the state! */}
-
                 <div className="mb-3">
                   <label className="form-label small fw-bold">Full Name</label>
                   <input type="text" name="name" className="form-control" placeholder="Enter full legal name" 
@@ -101,9 +118,7 @@ export default function SetupCitizenProfile() {
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100 fw-bold py-2 rounded-3" disabled={loading}>
-                  {loading ? (
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                  ) : 'Initialize Profile'}
+                  {loading ? <span className="spinner-border spinner-border-sm me-2"></span> : 'Initialize Profile'}
                 </button>
               </form>
             </div>
