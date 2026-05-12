@@ -9,11 +9,15 @@ import Judgements from './modules/judgment-order/pages/Judgements';
 import DashboardLayout from './layouts/DashboardLayout';
 import CourtOrders from './modules/judgment-order/pages/CourtOrders';
 import MyProfilePage from './modules/Citizen-Lawyer-Registration/pages/MyProfilePage';
+import MyDocumentsPage from './modules/Citizen-Lawyer-Registration/pages/MyDocumentsPage';
 import RegistrationDashboard from './modules/Citizen-Lawyer-Registration/pages/RegistrationDashboard';
 import CaseFilingPage from './modules/Citizen-Lawyer-Registration/pages/CaseFilingPage';
 import DocumentUploadPage from './modules/Citizen-Lawyer-Registration/pages/DocumentUploadPage';
 import CitizenPanelPage from './modules/Citizen-Lawyer-Registration/pages/CitizenPanelPage';
 import LawyerPanelPage from './modules/Citizen-Lawyer-Registration/pages/LawyerPanelPage';
+import RegistrationLayout from './layouts/RegistrationLayout';
+import CitizenRegistrationPage from './modules/Citizen-Lawyer-Registration/pages/CitizenRegistrationPage';
+import LawyerRegistrationPage from './modules/Citizen-Lawyer-Registration/pages/LawyerRegistrationPage';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -45,10 +49,10 @@ const AppContent = () => {
 
     const role = user.role?.toUpperCase();
     if (role === 'CITIZEN') {
-      return <Navigate to="/register/citizens" replace />;
+      return <Navigate to="/citizenregister/my-profile" replace />;
     }
     if (role === 'LAWYER') {
-      return <Navigate to="/register/lawyers" replace />;
+      return <Navigate to="/lawyerregister/my-profile" replace />;
     }
     if (role === 'ADMIN' || role === 'REGISTRAR') {
       return <Navigate to="/register/dashboard" replace />;
@@ -78,6 +82,26 @@ const AppContent = () => {
           <MyProfilePage />
         </ProtectedRoute>
       } />
+
+      <Route path="/citizenregister" element={
+        <ProtectedRoute>
+          <RegistrationLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<Navigate to="/citizenregister/my-profile" replace />} />
+        <Route path="my-profile" element={<MyProfilePage />} />
+        <Route path="my-documents" element={<MyDocumentsPage />} />
+      </Route>
+
+      <Route path="/lawyerregister" element={
+        <ProtectedRoute>
+          <RegistrationLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<Navigate to="/lawyerregister/my-profile" replace />} />
+        <Route path="my-profile" element={<MyProfilePage />} />
+        <Route path="my-documents" element={<MyDocumentsPage />} />
+      </Route>
 
       <Route path="/register/citizens" element={
         <ProtectedRoute>

@@ -25,16 +25,19 @@
 //     </div>
 //   );
 // }
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../layouts/Sidebar";
 import Topbar from "../layouts/Topbar";
+import { useAuth } from "../contexts/AuthContext";
 import { judgeMenu } from "../configs/judgeMenu"; // ✅ ADD THIS
 
 export default function DashboardLayout() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
+    logout();
+    navigate("/login");
   };
 
   return (

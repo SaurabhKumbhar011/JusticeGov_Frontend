@@ -131,7 +131,6 @@ export default function CaseFilingPage() {
                     onChange={handleCaseChange}
                     className="form-control"
                     placeholder="Enter lawyer ID"
-                    disabled={role === 'LAWYER'}
                   />
                 </div>
 

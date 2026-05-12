@@ -8,9 +8,7 @@ const stats = [
 ];
 
 const quickActions = [
-  { label: "Register a Citizen",  to: "/register/citizen",  desc: "Add a new citizen profile with identity details.",      icon: "🧑‍💼", color: "#0a3d62" },
-  { label: "Register a Lawyer",   to: "/register/lawyer",   desc: "Add a new lawyer profile with Bar ID credentials.",     icon: "⚖️",  color: "#1e5f8e" },
-  { label: "Upload Legal Document",to: "/register/document",desc: "Upload ID Proof or Bar Certificate for verification.", icon: "📄",  color: "#27ae60" },
+  // Removed duplicate actions as they are available in the sidebar menu
 ];
 
 export default function RegistrationDashboard() {
@@ -42,34 +40,6 @@ export default function RegistrationDashboard() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mb-3">
-        <h6 className="fw-bold text-secondary text-uppercase small mb-3">Quick Actions</h6>
-        <div className="row g-3">
-          {quickActions.map((a) => (
-            <div className="col-md-4" key={a.to}>
-              <Link to={a.to} className="text-decoration-none">
-                <div
-                  className="card border-0 shadow-sm rounded-4 p-4 h-100 hover-shadow"
-                  style={{ transition: "transform 0.15s", cursor: "pointer" }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-3px)"}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                >
-                  <div
-                    className="rounded-3 d-flex align-items-center justify-content-center mb-3"
-                    style={{ width: "48px", height: "48px", background: a.color + "1a", fontSize: "1.5rem" }}
-                  >
-                    {a.icon}
-                  </div>
-                  <h6 className="fw-bold text-dark mb-1">{a.label}</h6>
-                  <p className="text-muted small mb-0">{a.desc}</p>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Status Legend */}

@@ -26,7 +26,7 @@ export default function MyProfilePage() {
   const [saving, setSaving]     = useState(false);
   const [saveMsg, setSaveMsg]   = useState('');
 
-  // ── Find own profile by matching userId from token ──────────────────────────
+  // ── Find own profile ──────────────────────────
   const fetchProfile = async () => {
     setLoading(true);
     setError('');
@@ -35,11 +35,9 @@ export default function MyProfilePage() {
       const res = isCitizen ? await getAllCitizens() : await getAllLawyers();
       const list = res.data || [];
 
-      // Match by userId stored in token (sub is email; userId may be in token claims)
+      // Match by userId from token
       const userId = decoded?.userId || decoded?.id || null;
-      const found  = userId
-        ? list.find((p) => p.userId === userId || p.userId === Number(userId))
-        : list[0]; // fallback: first record (dev mode)
+      const found = userId ? list.find((p) => p.userId === userId || p.userId === Number(userId)) : null;
 
       if (!found) { setError('Profile not found for your account.'); return; }
 
@@ -116,15 +114,23 @@ export default function MyProfilePage() {
               {/* View Mode */}
               {!editForm && (
                 <div className="row g-3 small">
-                  {[
-                         ['Name',       profile.name],
-                    isCitizen
-                      ? ['Address', profile.address || '—']
-                      : ['Bar ID',  profile.barId],
-                    ['Contact',    profile.contactInfo || '—'],
-                    ['Status',     profile.status],
+                  {/* 🚀 THE FIX: Cleanly separate Citizen vs Lawyer fields */}
+                  {(isCitizen ? [
+                    ['Name', profile.name || '—'],
+                    ['DOB', profile.dob ? new Date(profile.dob).toLocaleDateString() : '—'],
+                    ['Gender', profile.gender || '—'],
+                    ['Address', profile.address || '—'],
+                    ['Contact', profile.contactInfo || '—'],
+                    ['Status', profile.status],
                     ['Registered', profile.createdDate ? new Date(profile.createdDate).toLocaleDateString() : '—'],
-                  ].map(([label, val]) => (
+                  ] : [
+                    ['Name', profile.name || '—'],
+                    ['DOB', profile.dob ? new Date(profile.dob).toLocaleDateString() : '—'],
+                    ['Bar ID', profile.barId || '—'],
+                    ['Contact', profile.contactInfo || '—'],
+                    ['Status', profile.status],
+                    ['Registered', profile.createdDate ? new Date(profile.createdDate).toLocaleDateString() : '—'],
+                  ]).map(([label, val]) => (
                     <div className="col-6" key={label}>
                       <div className="text-muted text-uppercase" style={{ fontSize: '0.7rem' }}>{label}</div>
                       <div className="fw-semibold text-dark">

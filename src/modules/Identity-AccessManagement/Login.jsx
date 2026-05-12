@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as authLogin } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
-
+import { decodeToken } from '../../utils/jwtUtils';
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
     
-    // ✅ Updated state keys to match your backend JSON exactly
     const [credentials, setCredentials] = useState({ 
         email: '', 
         password: '' 
@@ -27,16 +26,37 @@ const Login = () => {
         setError('');
         setLoading(true);
         try {
-            // This sends { "email": "...", "password": "..." }
+            // 1. Authenticate and get the token
             const data = await authLogin(credentials);
-            console.log("Login successful!", data);
-            login(data.token); // Store token globally via context
+            const token = data?.token || data?.accessToken;
+            if (!token) {
+                throw new Error('Login succeeded but no token was returned.');
+            }
 
-            login(data.token); // Store token globally via context
-            navigate("/dashboard");
-            
+            // Store token in localStorage and context
+            login(token);
+
+            // 2. Decode the token to determine the role
+            const decoded = decodeToken();
+            const role = decoded?.role?.toUpperCase();
+
+            console.log("Login successful!", { role });
+
+            if (role === "ADMIN" || role === "REGISTRAR") {
+                navigate("/register/dashboard");
+            } else if (role === "JUDGE") {
+                navigate("/judgeorder/judgements");
+            } else if (role === "COMPLIANCE_OFFICER") {
+                navigate("/compliance/dashboard");
+            } else if (role === "CITIZEN") {
+                navigate("/citizenregister/my-profile");
+            } else if (role === "LAWYER") {
+                navigate("/lawyerregister/my-profile");
+            } else {
+                navigate("/dashboard");
+            }
+
         } catch (err) {
-            // Displays specific error from your IdentityService (e.g., "PENDING")
             setError(err.response?.data?.message || 'Invalid email or password.');
         } finally {
             setLoading(false);
@@ -121,7 +141,7 @@ const Login = () => {
                         </div>
                         <div className="card-footer text-center py-3 bg-light">
                             <small className="text-muted">
-                                Need an account? <a href="/register" className="text-decoration-none">Register here</a>
+                                Need an account? <a href="/signup" className="text-decoration-none">Register here</a>
                             </small>
                         </div>
                     </div>
