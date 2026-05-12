@@ -23,7 +23,9 @@ export default function RegistrationLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    if (role === "CITIZEN") navigate("/citizenregister");
+    else if (role === "LAWYER") navigate("/lawyerregister");
+    else navigate("/register");
   };
 
   const linkClass = ({ isActive }) =>
