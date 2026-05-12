@@ -6,9 +6,9 @@ import CourtOrders from "../modules/judgment-order/pages/CourtOrders";
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route element={<DashboardLayout />}>
-        <Route path="/judgements" element={<Judgements />} />
-        <Route path="/court-orders" element={<CourtOrders />} />
+      <Route path="/" element={<DashboardLayout />}>
+        <Route path="judgements" element={<Judgements />} />
+        <Route path="court-orders" element={<CourtOrders />} />
       </Route>
     </Routes>
   );
