@@ -14,6 +14,7 @@ import CitizenPanelPage         from "../modules/Citizen-Lawyer-Registration/pag
 import LawyerPanelPage          from "../modules/Citizen-Lawyer-Registration/pages/LawyerPanelPage";
 import MyProfilePage            from "../modules/Citizen-Lawyer-Registration/pages/MyProfilePage";
 import MyDocumentsPage          from "../modules/Citizen-Lawyer-Registration/pages/MyDocumentsPage";
+import CaseFilingPage           from "../modules/Citizen-Lawyer-Registration/pages/CaseFilingPage";
 
 // Redirect to the correct landing page based on role
 function RoleRedirect() {
@@ -46,6 +47,7 @@ export default function AppRoutes() {
         <Route path="citizen"      element={<CitizenRegistrationPage />} />
         <Route path="lawyer"       element={<LawyerRegistrationPage />} />
         <Route path="document"     element={<DocumentUploadPage />} />
+        <Route path="case-filing"   element={<CaseFilingPage />} />
       </Route>
 
       {/* Root redirect */}

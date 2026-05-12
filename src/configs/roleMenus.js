@@ -2,12 +2,14 @@
 export const citizenMenu = [
   { label: "📊 My Profile",        path: "/register/my-profile" },
   { label: "📄 My Documents",      path: "/register/my-documents" },
+  { label: "📝 Case Filing",       path: "/register/case-filing" },
 ];
 
 // Menu for LAWYER role
 export const lawyerMenu = [
   { label: "📊 My Profile",        path: "/register/my-profile" },
   { label: "📄 My Documents",      path: "/register/my-documents" },
+  { label: "📝 Case Filing",       path: "/register/case-filing" },
 ];
 
 // Menu for ADMIN/REGISTRAR role (full access)

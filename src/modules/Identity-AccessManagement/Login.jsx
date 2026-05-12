@@ -32,26 +32,8 @@ const Login = () => {
             console.log("Login successful!", data);
             login(data.token); // Store token globally via context
 
-            const payload = JSON.parse(atob(data.token.split('.')[1]));
-                
-                const role = payload.role;   // ✅ IMPORTANT
- 
-                console.log("User Role:", role);
- 
-                // ✅ redirect based on role
-                if (role === "ADMIN") {
-                    navigate("/admin/dashboard");
-                } else if (role === "JUDGE") {
-                    navigate("/judgeorder/judgements");
-                } else if (role === "MANAGER") {
-                    navigate("/programmanager/dashboard");
-                } else if (role === "COMPLIANCE") {
-                    navigate("/compliance-audit/dashboard");
-                } else if (role === "AUDITOR") {
-                    navigate("/auditor/dashboard");
-                } else {
-                    navigate("/citizen/dashboard");  // default
-                }
+            login(data.token); // Store token globally via context
+            navigate("/dashboard");
             
         } catch (err) {
             // Displays specific error from your IdentityService (e.g., "PENDING")
