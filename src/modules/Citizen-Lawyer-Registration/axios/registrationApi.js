@@ -10,6 +10,15 @@ export const getAllCitizens = async () => {
     return api.get('/profiles/citizens');
 };
 
+// NEW: Fetch citizen profile by Identity User ID
+export const getCitizenByUserId = async (userId) => {
+    return api.get(`/profiles/citizens/user/${userId}`);
+};
+
+export const lookupProfile = async (userId, role) => {
+    return api.get(`/profiles/lookup/${userId}?role=${role}`);
+};
+
 export const getCitizenById = async (id) => {
     return api.get(`/profiles/citizens/${id}`);
 };
@@ -30,6 +39,11 @@ export const registerLawyer = async (lawyerData) => {
 
 export const getAllLawyers = async () => {
     return api.get('/profiles/lawyers');
+};
+
+// NEW: Fetch lawyer profile by Identity User ID
+export const getLawyerByUserId = async (userId) => {
+    return api.get(`/profiles/lawyers/user/${userId}`);
 };
 
 export const getLawyerById = async (id) => {

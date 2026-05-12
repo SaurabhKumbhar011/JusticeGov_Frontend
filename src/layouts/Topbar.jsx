@@ -1,6 +1,8 @@
 import { decodeToken } from "../utils/token";
+import { useNavigate } from "react-router-dom";
 
 export default function Topbar() {
+  const navigate = useNavigate();
   let email = "Unknown User";
   let role = "User";
   let initials = "U";
@@ -13,6 +15,11 @@ export default function Topbar() {
       initials = email.charAt(0).toUpperCase();
     }
   } catch {}
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <header className="navbar navbar-expand bg-white border-bottom px-4 py-3 sticky-top">
@@ -81,8 +88,10 @@ export default function Topbar() {
             </li>
             
             {/* Optional: Add a divider and logout if needed later */}
-            {/* <li><hr className="dropdown-divider" /></li>
-            <li><button className="dropdown-item text-danger small rounded-2">Logout</button></li> */}
+            <li><hr className="dropdown-divider" /></li>
+            <li><button onClick={handleLogout} className="dropdown-item text-danger small rounded-2 fw-semibold">
+              <i className="bi bi-box-arrow-right me-1"></i>Logout
+            </button></li>
           </ul>
         </div>
 

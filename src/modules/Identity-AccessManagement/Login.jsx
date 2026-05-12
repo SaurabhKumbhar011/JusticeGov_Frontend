@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as authLogin } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
-
+// NEW: Import the API calls to check if profile exists
+import { getCitizenByUserId, getLawyerByUserId } from "../Citizen-Lawyer-Registration/axios/registrationApi";
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
     
-    // ✅ Updated state keys to match your backend JSON exactly
     const [credentials, setCredentials] = useState({ 
         email: '', 
         password: '' 
@@ -27,34 +27,62 @@ const Login = () => {
         setError('');
         setLoading(true);
         try {
-            // This sends { "email": "...", "password": "..." }
+            // 1. Authenticate and get the token
             const data = await authLogin(credentials);
-            console.log("Login successful!", data);
-            login(data.token); // Store token globally via context
-
-            const payload = JSON.parse(atob(data.token.split('.')[1]));
-                
-                const role = payload.role;   // ✅ IMPORTANT
- 
-                console.log("User Role:", role);
- 
-                // ✅ redirect based on role
-                if (role === "ADMIN") {
-                    navigate("/admin/dashboard");
-                } else if (role === "JUDGE") {
-                    navigate("/judgeorder/judgements");
-                } else if (role === "MANAGER") {
-                    navigate("/programmanager/dashboard");
-                } else if (role === "COMPLIANCE") {
-                    navigate("/compliance-audit/dashboard");
-                } else if (role === "AUDITOR") {
-                    navigate("/auditor/dashboard");
-                } else {
-                    navigate("/citizen/dashboard");  // default
-                }
+            const token = data.token;
             
+            // 2. Decode the token to get role and currentUserId
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const role = payload.role;   
+            const currentUserId = payload.userId || payload.id || payload.sub; 
+
+            console.log("User Role:", role, "User ID:", currentUserId);
+
+            // 3. Store token globally
+            login(token); 
+
+            // 🚀 THE FIX: If they are Admin, Registrar, Judge, or Officer -> Skip DB check!
+            if (role === "ADMIN" || role === "REGISTRAR") {
+                navigate("/register/citizens");
+            } else if (role === "JUDGE") {
+                navigate("/judgements");
+            } else if (role === "COMPLIANCE_OFFICER") {
+                navigate("/compliance/dashboard");
+                
+            } else if (role === "CITIZEN") {
+                // 👤 Only Citizens do the DB check
+                try {
+                    await getCitizenByUserId(currentUserId);
+                    navigate("/citizenregister/my-profile");
+                } catch (profileError) {
+                    if (profileError.response && profileError.response.status === 404) {
+                        navigate("/setup-citizen-profile");
+                        return;
+                    } else {
+                        navigate("/citizenregister/my-profile");
+                    }
+                }
+                
+            } else if (role === "LAWYER") {
+                // ⚖️ Only Lawyers do the DB check
+                try {
+                    await getLawyerByUserId(currentUserId);
+                    navigate("/lawyerregister/my-profile");
+                } catch (profileError) {
+                    if (profileError.response && profileError.response.status === 404) {
+                        navigate("/setup-lawyer-profile");
+                        return;
+                    } else {
+                        navigate("/lawyerregister/my-profile");
+                    }
+                }
+                
+            } else {
+                // Fallback for unknown roles
+                navigate("/login");
+            }
+
         } catch (err) {
-            // Displays specific error from your IdentityService (e.g., "PENDING")
             setError(err.response?.data?.message || 'Invalid email or password.');
         } finally {
             setLoading(false);
@@ -139,7 +167,7 @@ const Login = () => {
                         </div>
                         <div className="card-footer text-center py-3 bg-light">
                             <small className="text-muted">
-                                Need an account? <a href="/register" className="text-decoration-none">Register here</a>
+                                Need an account? <a href="/signup" className="text-decoration-none">Register here</a>
                             </small>
                         </div>
                     </div>

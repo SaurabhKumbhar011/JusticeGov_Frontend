@@ -46,7 +46,6 @@ export default function ComplianceListPage() {
       <div className="d-flex align-items-center justify-content-between mb-4">
         <div>
           <h4 className="fw-bold text-dark mb-1">📋 Compliance Records</h4>
-          <p className="text-muted small mb-0"><code className="text-danger">GET /api/compliance/records</code></p>
         </div>
         <div className="d-flex gap-2">
           <button className="btn btn-sm btn-outline-secondary fw-semibold" onClick={fetchAll}>↻ Refresh</button>
@@ -148,11 +147,6 @@ export default function ComplianceListPage() {
                 {!selected.isResolved && (
                   <>
                     <hr className="my-3" />
-                    <small className="text-muted d-block mb-2">
-                      <code className="text-danger" style={{ fontSize: '0.68rem' }}>
-                        PUT /api/compliance/records/{selected.complianceID}/resolve?notes=
-                      </code>
-                    </small>
                     <label className="form-label fw-semibold text-secondary small text-uppercase">Corrective Action Notes</label>
                     <textarea className="form-control form-control-sm mb-2" rows={3}
                       placeholder="Describe the corrective action taken..."

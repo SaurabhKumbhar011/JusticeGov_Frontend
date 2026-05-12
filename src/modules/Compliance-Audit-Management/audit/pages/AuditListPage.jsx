@@ -43,7 +43,6 @@ export default function AuditListPage() {
       <div className="d-flex align-items-center justify-content-between mb-4">
         <div>
           <h4 className="fw-bold text-dark mb-1">🔍 Audits</h4>
-          <p className="text-muted small mb-0"><code className="text-dark">GET /api/audits</code></p>
         </div>
         <div className="d-flex gap-2">
           <button className="btn btn-sm btn-outline-secondary fw-semibold" onClick={fetchAll}>↻ Refresh</button>
@@ -108,7 +107,6 @@ export default function AuditListPage() {
               <div className="card-header bg-white border-bottom border-light px-4 py-3 d-flex justify-content-between align-items-center">
                 <div>
                   <h6 className="fw-bold mb-0">Audit #{selected.auditId}</h6>
-                  <small><code className="text-dark" style={{ fontSize: '0.68rem' }}>GET /api/audits/{selected.auditId}</code></small>
                 </div>
                 <div className="d-flex gap-2">
                   {!editForm && (
@@ -157,9 +155,6 @@ export default function AuditListPage() {
                 {/* Edit Mode — PUT /api/audits/{id} */}
                 {editForm && (
                   <div className="row g-3">
-                    <div className="col-12">
-                      <small><code className="text-dark" style={{ fontSize: '0.68rem' }}>PUT /api/audits/{selected.auditId}</code></small>
-                    </div>
                     <div className="col-md-6">
                       <label className="form-label fw-semibold text-secondary small text-uppercase">Officer ID</label>
                       <input className="form-control form-control-sm" type="number" value={editForm.officerId || ''}

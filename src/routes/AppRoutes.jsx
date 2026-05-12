@@ -3,8 +3,15 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import RegistrationLayout from "../layouts/RegistrationLayout";
 import { getUserRole } from "../utils/token";
 
+import Login from "../modules/Identity-AccessManagement/Login";
+import Register from "../modules/Identity-AccessManagement/Register";
+
 import Judgements from "../modules/judgment-order/pages/Judgements";
 import CourtOrders from "../modules/judgment-order/pages/CourtOrders";
+
+// ── NEW IMPORTS FOR PROFILE SETUP ──
+import SetupCitizenProfile from "../modules/Citizen-Lawyer-Registration/pages/SetupCitizenProfile";
+import SetupLawyerProfile from "../modules/Citizen-Lawyer-Registration/pages/SetupLawyerProfile";
 
 import RegistrationDashboard    from "../modules/Citizen-Lawyer-Registration/pages/RegistrationDashboard";
 import CitizenRegistrationPage  from "../modules/Citizen-Lawyer-Registration/pages/CitizenRegistrationPage";
@@ -25,15 +32,27 @@ import AuditNewPage             from "../modules/Compliance-Audit-Management/aud
 // Redirect to the correct landing page based on role
 function RoleRedirect() {
   const role = getUserRole();
+
   if (role === "CITIZEN")            return <Navigate to="/citizenregister/my-profile" replace />;
   if (role === "LAWYER")             return <Navigate to="/lawyerregister/my-profile" replace />;
   if (role === "COMPLIANCE_OFFICER") return <Navigate to="/compliance/dashboard" replace />;
-  return <Navigate to="/register/dashboard" replace />;
+  if (role === "JUDGE")              return <Navigate to="/judgements" replace />;
+  if (role === "ADMIN" || role === "REGISTRAR") return <Navigate to="/register/citizens" replace />;
+
+  return <Navigate to="/login" replace />;
 }
 
 export default function AppRoutes() {
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Register />} />
+
+      {/* ── PROFILE SETUP ROUTES (For new users after first login) ── */}
+      {/* Placed outside of layouts so they render as full-page standalone forms */}
+      <Route path="/setup-citizen-profile" element={<SetupCitizenProfile />} />
+      <Route path="/setup-lawyer-profile" element={<SetupLawyerProfile />} />
+
       {/* Judge module */}
       <Route element={<DashboardLayout />}>
         <Route path="/judgements"   element={<Judgements />} />
@@ -76,6 +95,7 @@ export default function AppRoutes() {
 
       {/* Root redirect */}
       <Route path="/" element={<RoleRedirect />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

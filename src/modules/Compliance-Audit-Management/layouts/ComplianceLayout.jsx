@@ -17,7 +17,7 @@ export default function ComplianceLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/compliance');
+    navigate('/login');
   };
 
   const linkClass = ({ isActive }) =>
@@ -72,17 +72,26 @@ export default function ComplianceLayout() {
           style={{ minHeight: '64px' }}>
           <div>
             <span className="fw-bold text-dark">Compliance & Audit Management Portal</span>
-            <span className="ms-3 badge bg-danger small">Module 4.7</span>
           </div>
-          <div className="d-flex align-items-center gap-2">
-            <div className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
-              style={{ width: '36px', height: '36px', background: '#1a1a2e', fontSize: '14px' }}>
-              {initials}
+          <div className="d-flex align-items-center gap-3">
+            <div className="d-flex align-items-center gap-2">
+              <div className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                style={{ width: '36px', height: '36px', background: '#1a1a2e', fontSize: '14px' }}>
+                {initials}
+              </div>
+              <div className="d-flex flex-column align-items-end">
+                <span className="fw-semibold text-dark small">{email}</span>
+                <span className="text-muted" style={{ fontSize: '0.72rem' }}>{role}</span>
+              </div>
             </div>
-            <div className="d-flex flex-column align-items-end">
-              <span className="fw-semibold text-dark small">{email}</span>
-              <span className="text-muted" style={{ fontSize: '0.72rem' }}>{role}</span>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm btn-outline-danger fw-semibold"
+              style={{ borderRadius: '6px' }}
+              title="Sign out"
+            >
+              <i className="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
           </div>
         </header>
 

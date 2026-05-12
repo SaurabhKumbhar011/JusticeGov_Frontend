@@ -8,6 +8,7 @@ function getMenuByRole(role) {
   return registrarMenu; // ADMIN, REGISTRAR, or any other role
 }
 
+// 🚀 Helper to provide dynamic titles for both Sidebar and Topbar
 function getRoleLabel(role) {
   if (role === "CITIZEN") return "Citizen Portal";
   if (role === "LAWYER")  return "Lawyer Portal";
@@ -23,9 +24,7 @@ export default function RegistrationLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    if (role === "CITIZEN") navigate("/citizenregister");
-    else if (role === "LAWYER") navigate("/lawyerregister");
-    else navigate("/register");
+    navigate("/login");
   };
 
   const linkClass = ({ isActive }) =>
@@ -53,7 +52,7 @@ export default function RegistrationLayout() {
         <div className="mb-3 ps-1">
           <span className={`badge px-3 py-2 rounded-pill fw-semibold ${
             role === "CITIZEN" ? "bg-info text-dark" :
-            role === "LAWYER"  ? "bg-primary"        : "bg-warning text-dark"
+            role === "LAWYER"  ? "bg-primary"         : "bg-warning text-dark"
           }`}>
             {role}
           </span>
@@ -89,22 +88,32 @@ export default function RegistrationLayout() {
           style={{ minHeight: "64px" }}
         >
           <div>
+            {/* 🚀 CHANGED: Now using getRoleLabel(role) for a dynamic title */}
             <span className="fw-bold text-dark" style={{ fontSize: "1rem" }}>
-              Citizen & Lawyer Registration Portal
+              {getRoleLabel(role)}
             </span>
-            <span className="ms-3 badge bg-warning text-dark small">Module 4.2</span>
           </div>
-          <div className="d-flex align-items-center gap-2">
-            <div
-              className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
-              style={{ width: "36px", height: "36px", background: "#0a3d62", fontSize: "14px" }}
+          <div className="d-flex align-items-center gap-3">
+            <div className="d-flex align-items-center gap-2">
+              <div
+                className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                style={{ width: "36px", height: "36px", background: "#0a3d62", fontSize: "14px" }}
+              >
+                {initials}
+              </div>
+              <div className="d-flex flex-column align-items-end">
+                <span className="fw-semibold text-dark small">{email}</span>
+                <span className="text-muted" style={{ fontSize: "0.72rem" }}>{role}</span>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm btn-outline-danger fw-semibold"
+              style={{ borderRadius: "6px" }}
+              title="Sign out"
             >
-              {initials}
-            </div>
-            <div className="d-flex flex-column align-items-end">
-              <span className="fw-semibold text-dark small">{email}</span>
-              <span className="text-muted" style={{ fontSize: "0.72rem" }}>{role}</span>
-            </div>
+              <i className="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
           </div>
         </header>
 

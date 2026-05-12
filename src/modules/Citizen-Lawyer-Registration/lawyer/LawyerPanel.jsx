@@ -177,11 +177,6 @@ export default function LawyerPanel() {
             <div className="card-header bg-white border-bottom border-light px-4 py-3 d-flex justify-content-between align-items-center">
               <div>
                 <h6 className="fw-bold mb-0 text-dark">Lawyer #{selected.id} — {selected.name}</h6>
-                <small className="text-muted">
-                  <code className="text-primary" style={{ fontSize: '0.7rem' }}>
-                    GET /profiles/lawyers/{selected.id}
-                  </code>
-                </small>
               </div>
               <div className="d-flex gap-2">
                 {!editForm && (
@@ -235,12 +230,6 @@ export default function LawyerPanel() {
               {/* ── Edit Mode — PUT /profiles/lawyers/{id} ── */}
               {editForm && (
                 <div className="row g-3 mb-3">
-                  <div className="col-12">
-                    <div className="text-muted small mb-2">
-                      <code className="text-primary" style={{ fontSize: '0.7rem' }}>PUT /profiles/lawyers/{selected.id}</code>
-                      <span className="ms-2 text-muted" style={{ fontSize: '0.7rem' }}>Body: contactInfo, status</span>
-                    </div>
-                  </div>
                   <div className="col-md-6">
                     <label className="form-label fw-semibold text-secondary small text-uppercase">Contact Info</label>
                     <input className="form-control form-control-sm" value={editForm.contactInfo || ''}
@@ -268,9 +257,6 @@ export default function LawyerPanel() {
               <hr className="my-3" />
               <div className="d-flex align-items-center justify-content-between mb-2">
                 <span className="fw-semibold text-secondary small text-uppercase">📄 Documents</span>
-                <code className="text-primary" style={{ fontSize: '0.68rem' }}>
-                  GET /profiles/documents/LAWYER/{selected.id}
-                </code>
               </div>
 
               {docs.length === 0 ? (
