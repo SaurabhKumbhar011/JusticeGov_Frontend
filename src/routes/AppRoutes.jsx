@@ -34,10 +34,9 @@ function RoleRedirect() {
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Judge module */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/judgements"   element={<Judgements />} />
-        <Route path="/court-orders" element={<CourtOrders />} />
+      <Route path="/" element={<DashboardLayout />}>
+        <Route path="judgements" element={<Judgements />} />
+        <Route path="court-orders" element={<CourtOrders />} />
       </Route>
 
       {/* CITIZEN module — citizen-only layout */}
