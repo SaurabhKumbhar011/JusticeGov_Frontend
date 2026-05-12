@@ -25,14 +25,14 @@ export default function LawyerPanelPage() {
                 Registration Profile
               </Link>
               <Link
-                to="/register/case-filing"
+                to="/lawyerregister/case-filing"
                 className="mt-1 block rounded-2xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
                 onClick={() => setMenuOpen(false)}
               >
                 Case Filing
               </Link>
               <Link
-                to="/register/document"
+                to="/lawyerregister/my-documents"
                 className="mt-1 block rounded-2xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
                 onClick={() => setMenuOpen(false)}
               >
@@ -47,7 +47,7 @@ export default function LawyerPanelPage() {
         </div>
         <div className="mt-4 flex flex-wrap gap-3 sm:mt-0">
           <Link
-            to="/register/case-filing"
+            to="/lawyerregister/case-filing"
             className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-emerald-200 transition hover:bg-emerald-600"
           >
             + File a Case

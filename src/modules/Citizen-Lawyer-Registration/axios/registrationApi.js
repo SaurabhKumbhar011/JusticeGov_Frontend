@@ -1,4 +1,5 @@
 import api from '../../../services/apiClient';
+import axios from 'axios';
 
 // ─── CITIZEN endpoints ────────────────────────────────────────────────────────
 
@@ -59,9 +60,14 @@ export const updateLawyer = async (id, lawyerData) => {
 };
 
 // ─── DOCUMENT endpoints ───────────────────────────────────────────────────────
-
-export const uploadDocument = async (documentData) => {
-    return api.post('/profiles/documents', documentData);
+export const uploadDocument = async (formData) => {
+    return await axios.post(`http://localhost:9999/profiles/documents`, formData, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            // Axios automatically sets the multipart/form-data boundary for you
+            'Content-Type': 'multipart/form-data' 
+        }
+    });
 };
 
 export const verifyDocument = async (id, status) => {
@@ -70,4 +76,14 @@ export const verifyDocument = async (id, status) => {
 
 export const getDocumentsByEntity = async (role, id) => {
     return api.get(`/profiles/documents/${role}/${id}`);
+};
+
+export const getDocuments = async (role, id) => {
+    // Assuming you have an axios instance setup, or just use axios directly
+    return await axios.get(`http://localhost:9999/profiles/documents/${role}/${id}`, {
+        headers: {
+            // Include your auth token here if required
+            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        }
+    });
 };

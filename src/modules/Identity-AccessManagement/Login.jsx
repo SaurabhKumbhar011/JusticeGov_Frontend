@@ -51,7 +51,7 @@ const Login = () => {
             } else if (role === "CITIZEN") {
                 navigate("/citizenregister/my-profile");
             } else if (role === "LAWYER") {
-                navigate("/lawyerregister/my-profile");
+                navigate("/lawyerregister/case-filing");
             } else {
                 navigate("/dashboard");
             }

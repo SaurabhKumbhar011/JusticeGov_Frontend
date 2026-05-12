@@ -6,8 +6,9 @@ export const citizenMenu = [
 
 // Menu for LAWYER role
 export const lawyerMenu = [
-  { label: "📊 My Profile",        path: "/register/my-profile" },
-  { label: "📄 My Documents",      path: "/register/my-documents" },
+  { label: "📊 My Profile",        path: "/lawyerregister/my-profile" },
+  { label: "📄 My Documents",      path: "/lawyerregister/my-documents" },
+  { label: "📝 Case Filing",       path: "/lawyerregister/case-filing" },
 ];
 
 // Menu for ADMIN/REGISTRAR role (full access)

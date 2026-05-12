@@ -52,7 +52,7 @@ const AppContent = () => {
       return <Navigate to="/citizenregister/my-profile" replace />;
     }
     if (role === 'LAWYER') {
-      return <Navigate to="/lawyerregister/my-profile" replace />;
+      return <Navigate to="/lawyerregister/case-filing" replace />;
     }
     if (role === 'ADMIN' || role === 'REGISTRAR') {
       return <Navigate to="/register/dashboard" replace />;
@@ -101,6 +101,7 @@ const AppContent = () => {
         <Route index element={<Navigate to="/lawyerregister/my-profile" replace />} />
         <Route path="my-profile" element={<MyProfilePage />} />
         <Route path="my-documents" element={<MyDocumentsPage />} />
+        <Route path="case-filing" element={<CaseFilingPage />} />
       </Route>
 
       <Route path="/register/citizens" element={
