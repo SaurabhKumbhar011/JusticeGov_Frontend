@@ -28,7 +28,7 @@ export default function Judgements() {
             Showing judgements created by you
           </p>
         </div>
-        
+
         <div className="col-auto">
           <div className="input-group shadow-sm" style={{ width: "350px" }}>
             <span className="input-group-text bg-white border-end-0">
@@ -47,25 +47,44 @@ export default function Judgements() {
 
       {/* Stats Cards Row - Now properly synchronized with your backend data */}
       <div className="row g-4 mb-4">
+        {/* Total Judgements - Folder Icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Total Judgements" value={stats.total} color="primary" />
-          </div>
+          <StatCard
+            title="Total Judgements"
+            value={stats.total}
+            icon="bi-collection-fill"
+            color="primary"
+          />
         </div>
+
+        {/* Issued - Gavel/Hammer Icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Issued" value={stats.issued} color="success" />
-          </div>
+          <StatCard
+            title="Issued"
+            value={stats.issued}
+            icon="bi-file-earmark-check-fill"
+            color="success"
+          />
         </div>
+
+        {/* Vacated - Shield with an X or Slash */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Vacated" value={stats.vacated} color="danger" />
-          </div>
+          <StatCard
+            title="Vacated"
+            value={stats.vacated}
+            icon="bi-shield-slash"
+            color="danger"
+          />
         </div>
+
+        {/* Revised - Pencil/Edit Icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Revised" value={stats.revised} color="secondary" />
-          </div>
+          <StatCard
+            title="Revised"
+            value={stats.revised}
+            icon="bi-pencil-square"
+            color="secondary"
+          />
         </div>
       </div>
 
@@ -89,7 +108,7 @@ export default function Judgements() {
             </div>
           </div>
         </div>
-        
+
         <div className="card-body p-0 position-relative">
           {/* ✅ Loading Overlay for better UX */}
           {loading && (

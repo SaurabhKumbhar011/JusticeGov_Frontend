@@ -6,29 +6,45 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+
+  // useEffect(() => {
+  //   const initAuth = async () => {
+  //     const token = localStorage.getItem('token');
+  //     if (token) {
+  //       try {
+  //         const data = await validateToken();
+  //         setUser({ 
+  //           email: data.email, 
+  //           role: data.role,
+  //           status: data.status
+  //         });
+  //         setIsAuthenticated(true);
+  //       } catch (err) {
+  //         localStorage.removeItem('token');
+  //         localStorage.removeItem('email');
+  //         localStorage.removeItem('role');
+  //         localStorage.removeItem('status');
+  //       }
+  //     }
+  //     setLoading(false);
+  //   };
+  //   initAuth();
+  // }, []);
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const data = await validateToken();
-          setUser({ 
-            email: data.email, 
-            role: data.role,
-            status: data.status
-          });
-          setIsAuthenticated(true);
-        } catch (err) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('email');
-          localStorage.removeItem('role');
-          localStorage.removeItem('status');
-        }
-      }
-      setLoading(false);
-    };
-    initAuth();
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      // ✅ Restore user FROM localStorage (no API call)
+      setUser({
+        email: localStorage.getItem('email'),
+        role: localStorage.getItem('role'),
+        status: localStorage.getItem('status'),
+      });
+
+      setIsAuthenticated(true);
+    }
+
+    setLoading(false);
   }, []);
 
   const loginUser = (data) => {
@@ -36,8 +52,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('email', data.email);
     localStorage.setItem('role', data.role);
     localStorage.setItem('status', data.status);
-    setUser({ 
-      email: data.email, 
+    setUser({
+      email: data.email,
       role: data.role,
       status: data.status
     });

@@ -20,6 +20,10 @@ import MyProfilePage from "../modules/Citizen-Lawyer-Registration/pages/MyProfil
 import MyDocumentsPage from "../modules/Citizen-Lawyer-Registration/pages/MyDocumentsPage";
 import Login from "../modules/Identity-AccessManagement/Login";
 import Register from "../modules/Identity-AccessManagement/Register";
+import ForgotPassword from "../modules/Identity-AccessManagement/ForgotPassword";
+import ResetPassword from "../modules/Identity-AccessManagement/ResetPassword";
+import AdminDashboard from "../modules/Identity-AccessManagement/AdminDashboard";
+
 import JudgeDashboard from "../modules/judgment-order/pages/JudgeDashboard";
 
 /* ✅ Role-based redirect AFTER authentication */
@@ -61,7 +65,18 @@ export default function AppRoutes({ ProtectedRoute, isAuthenticated }) {
         }
       />
 
-      {/* ✅ DASHBOARD ENTRY */}
+
+      <Route
+        path="/forgot-password"
+        element={<ForgotPassword />}
+      />
+
+      <Route
+        path="/reset-password"
+        element={<ResetPassword />}
+      />
+
+
       <Route
         path="/dashboard"
         element={
@@ -70,6 +85,15 @@ export default function AppRoutes({ ProtectedRoute, isAuthenticated }) {
           </ProtectedRoute>
         }
       />
+
+      <Route path="/admin-dashboard"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* ✅ JUDGE MODULE */}
       <Route path="/judgeorder" element={<DashboardLayout />}>

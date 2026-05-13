@@ -29,7 +29,7 @@ export default function CourtOrders() {
             Manage and track compliance of judicial directives
           </p>
         </div>
-        
+
         {/* Search Bar Container */}
         <div className="col-auto">
           <div className="input-group shadow-sm" style={{ width: "350px" }}>
@@ -49,25 +49,44 @@ export default function CourtOrders() {
 
       {/* Stats Cards Row */}
       <div className="row g-4 mb-4">
+        {/* Total Orders - Stack of files icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Total Orders" value={stats.total} color="primary" />
-          </div>
+          <StatCard
+            title="Total Orders"
+            value={stats.total}
+            icon="bi-files"
+            color="primary"
+          />
         </div>
+
+        {/* Issued - Official stamp/clipboard icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Issued" value={stats.issued} color="warning" />
-          </div>
+          <StatCard
+            title="Issued"
+            value={stats.issued}
+            icon="bi-clipboard-check-fill"
+            color="warning"
+          />
         </div>
+
+        {/* Complied - Shield with checkmark icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Complied" value={stats.complied} color="success" />
-          </div>
+          <StatCard
+            title="Complied"
+            value={stats.complied}
+            icon="bi-shield-check"
+            color="success"
+          />
         </div>
+
+        {/* Non-Compliant - Warning octagon icon */}
         <div className="col-md-3">
-          <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Non-Compliant" value={stats.nonCompliant} color="danger" />
-          </div>
+          <StatCard
+            title="Non-Compliant"
+            value={stats.nonCompliant}
+            icon="bi-exclamation-octagon-fill"
+            color="danger"
+          />
         </div>
       </div>
 
@@ -91,7 +110,7 @@ export default function CourtOrders() {
             </div>
           </div>
         </div>
-        
+
         <div className="card-body p-0 position-relative">
           {/* Optional: Add a subtle loading overlay */}
           {loading && (
@@ -99,7 +118,7 @@ export default function CourtOrders() {
               <div className="spinner-border spinner-border-sm text-primary"></div>
             </div>
           )}
-          
+
           <CourtOrderTable
             orders={orders}
             onEdit={setSelected}

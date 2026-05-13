@@ -92,7 +92,7 @@ const Login = () => {
 
       // ✅ ROLE-BASED REDIRECT (Preserved)
       if (data.role === "ADMIN") {
-        navigate("/citizenregister/dashboard");
+        navigate("/admin-dashboard");
       } else if (data.role === "JUDGE") {
         navigate("/judgeorder/judgements");
       } else if (data.role === "CITIZEN" || data.role === "LAWYER") {
