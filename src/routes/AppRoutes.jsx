@@ -22,6 +22,8 @@ import Login from "../modules/Identity-AccessManagement/Login";
 import Register from "../modules/Identity-AccessManagement/Register";
 import JudgeDashboard from "../modules/judgment-order/pages/JudgeDashboard";
 
+import ResearchDashboard from "../modules/Hearing_and_Research/pages/ResearchDashboard";
+
 /* ✅ Role-based redirect AFTER authentication */
 function RoleRedirect() {
   const role = localStorage.getItem("role");
@@ -32,6 +34,11 @@ function RoleRedirect() {
 
   if (role === "CITIZEN" || role === "LAWYER") {
     return <Navigate to="/citizenregister/dashboard" replace />;
+  }
+
+
+  if (role === "RESEARCHER") {
+    return <Navigate to="/research" replace />; // ✅ FIX
   }
 
   return <Navigate to="/login" replace />;
@@ -79,6 +86,11 @@ export default function AppRoutes({ ProtectedRoute, isAuthenticated }) {
 
         <Route path="judgements" element={<Judgements />} />
         <Route path="court-orders" element={<CourtOrders />} />
+      </Route>
+
+      {/* ✅ RESEARCHER MODULE */}
+      <Route path="/research" element={<DashboardLayout />}>
+        <Route index element={<ResearchDashboard />} />
       </Route>
 
       {/* ✅ REGISTRATION MODULE */}

@@ -1,40 +1,34 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../layouts/Sidebar";
 import Topbar from "../layouts/Topbar";
-import { judgeMenu } from "../configs/judgeMenu"; // ✅ ADD THIS
-import { useNavigate } from "react-router-dom";
-import { useAuth } from '../contexts/AuthContext';
+import roleMenus from "../configs/roleMenus"; // ✅ USE THIS
+import { useAuth } from "../contexts/AuthContext";
 
 export default function DashboardLayout() {
   const { logoutUser } = useAuth();
   const navigate = useNavigate();
+
+  const role = localStorage.getItem("role"); // ✅ get role
+  const menuItems = roleMenus[role] || [];   // ✅ pick correct menu
+
   const handleLogout = () => {
     logoutUser();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
     <div className="layout-wrapper">
-
-      {/* ✅ Sidebar */}
       <Sidebar
-        menuItems={judgeMenu}
+        menuItems={menuItems}   // ✅ dynamic now
         onLogout={handleLogout}
       />
 
-      {/* ✅ Right Side (Topbar + Content) */}
       <div className="layout-main">
-
-        {/* ✅ Topbar (REAL HEADER) */}
         <Topbar />
-
-        {/* ✅ Main Content */}
         <div className="layout-content">
           <Outlet />
         </div>
-
       </div>
-
     </div>
   );
 }
