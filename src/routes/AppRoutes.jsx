@@ -29,6 +29,8 @@ import ComplianceNewPage        from "../modules/Compliance-Audit-Management/com
 import AuditListPage            from "../modules/Compliance-Audit-Management/audit/pages/AuditListPage";
 import AuditNewPage             from "../modules/Compliance-Audit-Management/audit/pages/AuditNewPage";
 
+import CaseFilingPage           from "../modules/Case-Filling-and-Document-Management/case/pages/CaseFilingPage";
+
 // Redirect to the correct landing page based on role
 function RoleRedirect() {
   const role = getUserRole();
@@ -72,6 +74,7 @@ export default function AppRoutes() {
         <Route index element={<Navigate to="/lawyerregister/my-profile" replace />} />
         <Route path="my-profile"   element={<MyProfilePage />} />
         <Route path="my-documents" element={<MyDocumentsPage />} />
+        <Route path="case-filing"  element={<CaseFilingPage />} />
       </Route>
 
       {/* ADMIN / REGISTRAR — full access */}

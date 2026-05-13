@@ -45,7 +45,7 @@ export default function MyProfilePage() {
       setProfile(res.data);
 
       const dRes = await getDocumentsByEntity(role, res.data.id);
-      setDocs(dRes.data || []);
+      setDocs(Array.isArray(dRes.data) ? dRes.data : []);
     } catch (e) {
       setError(e?.response?.data?.message || 'Failed to load profile.');
     } finally {
@@ -138,7 +138,7 @@ export default function MyProfilePage() {
 
               {!editForm ? (
                 <div className="row g-3 small">
-                  {[
+                  {profile && [
                     ['Full Name', profile.name],
                     ['Date of Birth', profile.dob],
                     isCitizen ? ['Address', profile.address] : ['Bar ID', profile.barId],
@@ -188,7 +188,7 @@ export default function MyProfilePage() {
               <h6 className="fw-bold mb-0">📁 Documents</h6>
             </div>
             <div className="card-body px-4 py-3">
-              {docs.length === 0 ? (
+              {!Array.isArray(docs) || docs.length === 0 ? (
                 <div className="text-center py-4">
                   <p className="text-muted small">No documents found.</p>
                 </div>
