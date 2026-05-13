@@ -1,65 +1,10 @@
-// import { useEffect, useState } from 'react';
-// import { judgementService } from '../services/judgementService';
-
-// export default function useJudgements(caseId) {
-//   const [judgements, setJudgements] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   const fetchJudgements = async () => {
-//     if (!caseId) return;
-//     setLoading(true);
-//     try {
-//       const res = await judgementService.getByCase(caseId);
-//       setJudgements(res.data);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const createJudgement = async (data) => {
-//     await judgementService.create(data);
-//     fetchJudgements();
-//   };
-
-//   const updateJudgement = async (id, data) => {
-//     await judgementService.update(id, data);
-//     fetchJudgements();
-//   };
-
-//   const deleteJudgement = async (id) => {
-//     await judgementService.remove(id);
-//     fetchJudgements();
-//   };
-
-//   const stats = {
-//     total: judgements.length,
-//     plaintiff: judgements.filter(j => j.status === 'PLAINTIFF_WIN').length,
-//     defendant: judgements.filter(j => j.status === 'DEFENDANT_WIN').length,
-//     settlements: judgements.filter(j => j.status === 'SETTLED').length
-//   };
-
-//   useEffect(() => {
-//     fetchJudgements();
-//   }, [caseId]);
-
-//   return {
-//     judgements,
-//     loading,
-//     stats,
-//     createJudgement,
-//     updateJudgement,
-//     deleteJudgement
-//   };
-// }
-
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { judgementService } from "../services/judgementService";
 
 export default function useJudgements(caseId) {
   const [judgements, setJudgements] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH ONLY LOGGED‑IN JUDGE'S JUDGEMENTS
   const fetchJudgements = useCallback(async () => {
     setLoading(true);
     try {
@@ -77,31 +22,29 @@ export default function useJudgements(caseId) {
     fetchJudgements();
   }, [fetchJudgements]);
 
-  // ✅ CREATE → AUTO REFRESH
+  // ✅ Mutation Wrappers
   const createJudgement = async (data) => {
     await judgementService.create(data);
-    fetchJudgements();
+    await fetchJudgements();
   };
 
-  // ✅ UPDATE → AUTO REFRESH
   const updateJudgement = async (id, data) => {
     await judgementService.update(id, data);
-    fetchJudgements();
+    await fetchJudgements();
   };
 
-  // ✅ DELETE → AUTO REFRESH
   const deleteJudgement = async (id) => {
     await judgementService.remove(id);
-    fetchJudgements();
+    await fetchJudgements();
   };
 
-  // ✅ STATS (BASED ON FILTERED DATA)
-  const stats = {
+  // ✅ DERIVED STATS: Matches the actual statuses in your screenshot
+  const stats = useMemo(() => ({
     total: judgements.length,
-    plaintiff: judgements.filter(j => j.status === "PLAINTIFF_WIN").length,
-    defendant: judgements.filter(j => j.status === "DEFENDANT_WIN").length,
-    settlements: judgements.filter(j => j.status === "SETTLED").length,
-  };
+    issued: judgements.filter(j => j.status === "ISSUED").length,
+    vacated: judgements.filter(j => j.status === "VACATED").length,
+    revised: judgements.filter(j => j.status === "REVISED").length,
+  }), [judgements]);
 
   return {
     judgements,

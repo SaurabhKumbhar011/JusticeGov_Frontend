@@ -6,7 +6,7 @@ export const uploadDocument = async (caseId, file, type) => {
     formData.append('caseId', caseId);
     formData.append('file', file);
     formData.append('type', type);
-    return api.post('http://localhost:8181/api/documents/upload', formData, {
+    return api.post('api/documents/upload', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -15,4 +15,4 @@ export const uploadDocument = async (caseId, file, type) => {
 
 // GET /api/documents/{caseId}
 export const getDocumentsByCase = async (caseId) =>
-    api.get(`http://localhost:8181/api/documents/${caseId}`);
+    api.get(`api/documents/${caseId}`);

@@ -1,189 +1,270 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login as authLogin } from '../../services/authService';
-import { useAuth } from '../../contexts/AuthContext';
-// NEW: Import the API calls to check if profile exists
-import { getCitizenByUserId, getLawyerByUserId } from "../Citizen-Lawyer-Registration/axios/registrationApi";
+// import React, { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import { login } from '../../services/authService';
+// import { useAuth } from '../../contexts/AuthContext';
+
+// const Login = () => {
+//   const [creds, setCreds] = useState({ email: '', password: '' });
+//   const [error, setError] = useState('');
+//   const { loginUser } = useAuth();
+//   const navigate = useNavigate();
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError('');
+//     try {
+//       const data = await login(creds);
+//       loginUser(data);
+//       // Route to Admin Dashboard if role matches
+//       if (data.role === 'ADMIN') {
+//         navigate('/citizenregister/dashboard');
+//       } else if (data.role === 'JUDGE') {
+//         navigate('/judgeorder/judgements');
+//       } else if (data.role === 'CITIZEN' || data.role === 'LAWYER') {
+//         navigate('/citizenregister/my-profile');
+//       } else {
+//         navigate('/');
+//       }
+//     } catch (err) {
+//       setError(err.response?.data?.message || 'Authentication failed. Please check credentials.');
+//     }
+//   };
+
+//   return (
+//     <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: '#0f172a' }}>
+//       <div className="card border-0 shadow-lg p-5 rounded-4" style={{ backgroundColor: '#1e293b', maxWidth: '450px', width: '100%' }}>
+//         <div className="text-center mb-4">
+//           <h1 className="fw-bold text-white mb-1">JusticeGov</h1>
+//           <p className="text-secondary small text-uppercase fw-bold">Identity & Access Portal</p>
+//         </div>
+
+//         {error && <div className="alert alert-danger bg-danger bg-opacity-10 border-0 text-danger small py-2">{error}</div>}
+
+//         <form onSubmit={handleSubmit}>
+//           <div className="mb-3">
+//             <label className="form-label text-secondary small fw-semibold">Government Email</label>
+//             <input
+//               type="email"
+//               className="form-control bg-dark text-white border-0 py-2 shadow-none"
+//               style={{ borderRadius: '8px' }}
+//               onChange={e => setCreds({ ...creds, email: e.target.value })}
+//               required
+//             />
+//           </div>
+//           <div className="mb-4">
+//             <label className="form-label text-secondary small fw-semibold">Secure Password</label>
+//             <input
+//               type="password"
+//               className="form-control bg-dark text-white border-0 py-2 shadow-none"
+//               style={{ borderRadius: '8px' }}
+//               onChange={e => setCreds({ ...creds, password: e.target.value })}
+//               required
+//             />
+//           </div>
+//           <button type="submit" className="btn btn-info w-100 fw-bold py-2 shadow" style={{ background: '#38bdf8', border: 'none' }}>
+//             Authorize Login
+//           </button>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Login;
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { login } from "../../services/authService";
+import { useAuth } from "../../contexts/AuthContext";
+
 const Login = () => {
-    const navigate = useNavigate();
-    const { login } = useAuth();
-    
-    const [credentials, setCredentials] = useState({ 
-        email: '', 
-        password: '' 
-    });
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+  const [creds, setCreds] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const { loginUser } = useAuth();
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setCredentials({ 
-            ...credentials, 
-            [e.target.name]: e.target.value 
-        });
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
-        try {
-            // 1. Authenticate and get the token
-            const data = await authLogin(credentials);
-                        const rawToken = typeof data === 'string'
-                            ? data
-                            : data.token ?? data.accessToken ?? data.access_token ?? data.jwt ?? data.authToken ?? data?.data?.token ?? data?.data?.accessToken;
-                        if (!rawToken) {
-                            throw new Error('Login response did not include an auth token.');
-                        }
-            const token = rawToken?.toString().trim().replace(/^\"|\"$/g, '').replace(/^\'|\'$/g, '');
-            
-            // 2. Decode the token to get role and currentUserId
-            const encoded = token.split('.')[1] || '';
-            const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(atob(base64));
-            const role = payload.role;   
-            const currentUserId = payload.userId || payload.id || payload.sub; 
+    try {
+      const data = await login(creds);
+      loginUser(data);
 
-            console.log("User Role:", role, "User ID:", currentUserId);
+      // ✅ ROLE-BASED REDIRECT (Preserved)
+      if (data.role === "ADMIN") {
+        navigate("/citizenregister/dashboard");
+      } else if (data.role === "JUDGE") {
+        navigate("/judgeorder/judgements");
+      } else if (data.role === "CITIZEN" || data.role === "LAWYER") {
+        navigate("/citizenregister/my-profile");
+      } else if (data.role === "COMPLIANCE_OFFICER") {
+        navigate("/compliance/dashboard");
+      } else if (data.role === "AUDITOR") {
+        navigate("/compliance/audits");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Authentication failed. Please check credentials."
+      );
+    }
+  };
 
-            // 3. Store token globally
-            login(token); 
+  const colors = {
+    bgMain: "#0f172a",
+    cardBg: "#1e293b",
+    accent: "#38bdf8",
+  };
 
-            // 🚀 THE FIX: If they are Admin, Registrar, Judge, Officer, or Auditor -> Skip DB check!
-            if (role === "ADMIN" || role === "REGISTRAR") {
-                navigate("/register/citizens");
-            } else if (role === "JUDGE") {
-                navigate("/judgements");
-            } else if (role === "COMPLIANCE_OFFICER") {
-                navigate("/compliance/dashboard");
-            } else if (role === "AUDITOR") {
-                navigate("/compliance/audits");
-            } else if (role === "CITIZEN") {
-                // 👤 Only Citizens do the DB check
-                try {
-                    await getCitizenByUserId(currentUserId);
-                    navigate("/citizenregister/my-profile");
-                } catch (profileError) {
-                    if (profileError.response && profileError.response.status === 404) {
-                        navigate("/setup-citizen-profile");
-                        return;
-                    } else {
-                        navigate("/citizenregister/my-profile");
-                    }
-                }
-                
-            } else if (role === "LAWYER") {
-                // ⚖️ Only Lawyers do the DB check
-                try {
-                    await getLawyerByUserId(currentUserId);
-                    navigate("/lawyerregister/my-profile");
-                } catch (profileError) {
-                    if (profileError.response && profileError.response.status === 404) {
-                        navigate("/setup-lawyer-profile");
-                        return;
-                    } else {
-                        navigate("/lawyerregister/my-profile");
-                    }
-                }
-                
-            } else {
-                // Fallback for unknown roles
-                navigate("/login");
-            }
+  return (
+    <div
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5"
+      style={{
+        backgroundColor: colors.bgMain,
+        backgroundImage: "radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%)",
+      }}
+    >
+      <div
+        className="card border-0 shadow-lg rounded-4 overflow-hidden"
+        style={{
+          backgroundColor: colors.cardBg,
+          maxWidth: "420px",
+          width: "100%",
+        }}
+      >
+        {/* Top Accent Bar */}
+        <div style={{ height: "4px", backgroundColor: colors.accent }}></div>
 
-        } catch (err) {
-            setError(err.response?.data?.message || 'Invalid email or password.');
-        } finally {
-            setLoading(false);
-        }
-    };
+        <div className="card-body p-4 p-md-5">
+          {/* Header/Branding */}
+          <div className="text-center mb-4">
+            <Link to="/" className="text-decoration-none">
+              <div
+                className="d-inline-flex align-items-center justify-content-center mb-3"
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  backgroundColor: "rgba(56, 189, 248, 0.1)",
+                  borderRadius: "15px",
+                }}
+              >
+                <i className="bi bi-shield-lock-fill fs-2" style={{ color: colors.accent }}></i>
+              </div>
+            </Link>
+            <h2 className="fw-bold text-white mb-1">JusticeGov</h2>
+            <p className="text-secondary small text-uppercase fw-bold" style={{ letterSpacing: "1px" }}>
+              Identity & Access Portal
+            </p>
+          </div>
 
-    return (
-        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
-            <div className="row w-100 justify-content-center">
-                <div className="col-md-6 col-lg-4">
-                    <div className="card shadow-lg border-0 rounded-lg">
-                        <div className="card-header bg-primary text-white text-center py-4">
-                            <h3 className="mb-0">
-                                <i className="bi bi-shield-lock me-2"></i>
-                                JusticeGov Login
-                            </h3>
-                            <p className="mb-0 small">Secure Access Portal</p>
-                        </div>
-                        <div className="card-body p-4">
-                            {error && (
-                                <div className="alert alert-danger" role="alert">
-                                    <i className="bi bi-exclamation-triangle me-2"></i>
-                                    {error}
-                                </div>
-                            )}
-                            
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label htmlFor="email" className="form-label fw-semibold">
-                                        <i className="bi bi-envelope me-1"></i>
-                                        Email Address
-                                    </label>
-                                    <input 
-                                        type="email" 
-                                        className="form-control form-control-lg"
-                                        id="email"
-                                        name="email"
-                                        value={credentials.email} 
-                                        onChange={handleChange} 
-                                        placeholder="Enter your email"
-                                        required 
-                                    />
-                                </div>
-                                
-                                <div className="mb-4">
-                                    <label htmlFor="password" className="form-label fw-semibold">
-                                        <i className="bi bi-key me-1"></i>
-                                        Password
-                                    </label>
-                                    <input 
-                                        type="password" 
-                                        className="form-control form-control-lg"
-                                        id="password"
-                                        name="password"
-                                        value={credentials.password} 
-                                        onChange={handleChange} 
-                                        placeholder="Enter your password"
-                                        required 
-                                    />
-                                </div>
-                                
-                                <div className="d-grid">
-                                    <button 
-                                        type="submit" 
-                                        className="btn btn-primary btn-lg"
-                                        disabled={loading}
-                                    >
-                                        {loading ? (
-                                            <>
-                                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                                Signing In...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="bi bi-box-arrow-in-right me-2"></i>
-                                                Sign In
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="card-footer text-center py-3 bg-light">
-                            <small className="text-muted">
-                                Need an account? <a href="/signup" className="text-decoration-none">Register here</a>
-                            </small>
-                        </div>
-                    </div>
-                </div>
+          {/* Error Message */}
+          {error && (
+            <div className="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-danger d-flex align-items-center small py-2 mb-4" role="alert">
+              <i className="bi bi-exclamation-octagon-fill me-2"></i>
+              <div>{error}</div>
             </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            {/* Email Input */}
+            <div className="mb-3">
+              <label className="form-label text-light small fw-semibold">Government Email</label>
+              <div className="input-group">
+                <span className="input-group-text bg-dark border-0 text-secondary">
+                  <i className="bi bi-envelope-at"></i>
+                </span>
+                <input
+                  type="email"
+                  name="email" // ⬅️ Added this
+                  autocomplete="username"
+                  className="form-control bg-dark text-white border-0 py-2 shadow-none custom-input"
+                  placeholder="name@gov.in"
+                  onChange={(e) => setCreds({ ...creds, email: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Input */}
+            <div className="mb-3">
+              <label className="form-label text-light small fw-semibold">Secure Password</label>
+              <div className="input-group">
+                <span className="input-group-text bg-dark border-0 text-secondary">
+                  <i className="bi bi-key"></i>
+                </span>
+                <input
+                  type="password"
+                  name="password" // ⬅️ Added this
+                  autocomplete="current-password"
+                  className="form-control bg-dark text-white border-0 py-2 shadow-none custom-input"
+                  placeholder="••••••••"
+                  onChange={(e) => setCreds({ ...creds, password: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="text-end mb-4">
+              <Link to="/forgot-password" className="text-decoration-none small fw-semibold" style={{ color: colors.accent }}>
+                Forgot Password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              className="btn w-100 fw-bold py-3 shadow text-uppercase"
+              style={{
+                backgroundColor: colors.accent,
+                border: "none",
+                color: "#000",
+                letterSpacing: "1px",
+                transition: "all 0.3s ease",
+              }}
+            >
+              Authorize Login
+            </button>
+          </form>
+
+          {/* Footer Links */}
+          <div className="text-center mt-4">
+            <p className="small text-secondary mb-3">
+              Need an official account?{" "}
+              <Link to="/register" className="fw-bold text-decoration-none" style={{ color: colors.accent }}>
+                Register here
+              </Link>
+            </p>
+            <hr className="bg-secondary opacity-25" />
+            <Link to="/" className="text-secondary text-decoration-none small d-flex align-items-center justify-content-center">
+              <i className="bi bi-arrow-left me-2"></i> Back to Homepage
+            </Link>
+          </div>
         </div>
-    );
+      </div>
+
+      <style>{`
+        .custom-input:focus {
+            background-color: #000 !important;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
+            color: #fff !important;
+        }
+        .input-group-text {
+            border-top-left-radius: 10px !important;
+            border-bottom-left-radius: 10px !important;
+        }
+        .custom-input {
+            border-top-right-radius: 10px !important;
+            border-bottom-right-radius: 10px !important;
+        }
+        .btn:hover {
+            background-color: #7dd3fc !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3) !important;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default Login;

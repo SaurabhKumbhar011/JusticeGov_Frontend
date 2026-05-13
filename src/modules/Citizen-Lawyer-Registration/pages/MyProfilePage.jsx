@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUserRole, decodeToken } from '../../../utils/token';
+import { getUserRole, decodeToken } from '../../../utils/jwtUtils';
 import {
   getCitizenByUserId,
   getLawyerByUserId,

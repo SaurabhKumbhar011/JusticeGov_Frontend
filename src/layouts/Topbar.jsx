@@ -1,4 +1,4 @@
-import { decodeToken } from "../utils/token";
+//import { decodeToken } from "../utils/token";
 import { useNavigate } from "react-router-dom";
 
 export default function Topbar() {
@@ -8,12 +8,10 @@ export default function Topbar() {
   let initials = "U";
 
   try {
-    const decoded = decodeToken();
-    if (decoded) {
-      email = decoded.sub || email;
-      role = decoded.role || role;
-      initials = email.charAt(0).toUpperCase();
-    }
+    email=localStorage.getItem('email');
+    role=localStorage.getItem('role');
+    initials = email.charAt(0).toUpperCase();
+    
   } catch {}
 
   const handleLogout = () => {

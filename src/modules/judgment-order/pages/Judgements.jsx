@@ -1,82 +1,3 @@
-// import { useState } from "react";
-// import JudgementForm from "../components/JudgementForm";
-// import useJudgements from "../../../hooks/useJudgements";
-// import JudgementTable from "../components/JudgementTable";
-// import StatCard from "../../../components/stats/StatCard";
-
-// export default function Judgements() {
-//   const [searchCaseId, setSearchCaseId] = useState("");
-
-//   const {
-//     judgements,
-//     stats,
-//     createJudgement,
-//     updateJudgement,
-//     deleteJudgement,
-//   } = useJudgements(searchCaseId || null);
-
-//   const [selected, setSelected] = useState(null);
-
-//   return (
-//     <div className="container-fluid p-4">
-//       <h2>Judgements</h2>
-//       <p className="text-muted">
-//         Showing judgements created by you
-//       </p>
-
-//       {/* Stats */}
-//       <div className="row g-3 my-3">
-//         <StatCard title="Total Judgements" value={stats.total} />
-//         <StatCard title="Plaintiff Wins" value={stats.plaintiff} />
-//         <StatCard title="Defendant Wins" value={stats.defendant} />
-//         <StatCard title="Settlements" value={stats.settlements} />
-//       </div>
-
-//       {/* Search */}
-//       <div className="mb-3">
-//         <input
-//           type="number"
-//           className="form-control"
-//           placeholder="Search by Case ID (leave empty for all)"
-//           value={searchCaseId}
-//           onChange={(e) => setSearchCaseId(e.target.value)}
-//         />
-//       </div>
-
-//       {/* Table */}
-//       <div className="card mt-4">
-//         <div className="card-body">
-//           <div className="d-flex justify-content-between mb-3">
-//             <h5>Judgement Records</h5>
-//             <button
-//               className="btn btn-primary"
-//               data-bs-toggle="modal"
-//               data-bs-target="#judgementModal"
-//               onClick={() => setSelected(null)}
-//             >
-//               + New Judgement
-//             </button>
-//           </div>
-
-//           <JudgementTable
-//             judgements={judgements}
-//             onEdit={setSelected}
-//             onDelete={deleteJudgement}
-//           />
-//         </div>
-//       </div>
-
-//       {/* Modal */}
-//       <JudgementForm
-//         selected={selected}
-//         defaultCaseId={searchCaseId || ""}
-//         onCreate={createJudgement}
-//         onUpdate={updateJudgement}
-//       />
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
 import JudgementForm from "../components/JudgementForm";
 import useJudgements from "../../../hooks/useJudgements";
@@ -85,16 +6,16 @@ import StatCard from "../../../components/stats/StatCard";
 
 export default function Judgements() {
   const [searchCaseId, setSearchCaseId] = useState("");
+  const [selected, setSelected] = useState(null);
 
   const {
     judgements,
+    loading,
     stats,
     createJudgement,
     updateJudgement,
     deleteJudgement,
   } = useJudgements(searchCaseId || null);
-
-  const [selected, setSelected] = useState(null);
 
   return (
     <div className="container-fluid py-4 px-4">
@@ -108,7 +29,6 @@ export default function Judgements() {
           </p>
         </div>
         
-        {/* Search Bar Container */}
         <div className="col-auto">
           <div className="input-group shadow-sm" style={{ width: "350px" }}>
             <span className="input-group-text bg-white border-end-0">
@@ -125,7 +45,7 @@ export default function Judgements() {
         </div>
       </div>
 
-      {/* Stats Cards Row - Using d-flex and flex-wrap for better control */}
+      {/* Stats Cards Row - Now properly synchronized with your backend data */}
       <div className="row g-4 mb-4">
         <div className="col-md-3">
           <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
@@ -134,17 +54,17 @@ export default function Judgements() {
         </div>
         <div className="col-md-3">
           <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Plaintiff Wins" value={stats.plaintiff} color="success" />
+            <StatCard title="Issued" value={stats.issued} color="success" />
           </div>
         </div>
         <div className="col-md-3">
           <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Defendant Wins" value={stats.defendant} color="info" />
+            <StatCard title="Vacated" value={stats.vacated} color="danger" />
           </div>
         </div>
         <div className="col-md-3">
           <div className="card border-0 shadow-sm h-100 p-3 rounded-3 bg-white">
-            <StatCard title="Settlements" value={stats.settlements} color="warning" />
+            <StatCard title="Revised" value={stats.revised} color="secondary" />
           </div>
         </div>
       </div>
@@ -170,14 +90,19 @@ export default function Judgements() {
           </div>
         </div>
         
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <JudgementTable
-              judgements={judgements}
-              onEdit={setSelected}
-              onDelete={deleteJudgement}
-            />
-          </div>
+        <div className="card-body p-0 position-relative">
+          {/* ✅ Loading Overlay for better UX */}
+          {loading && (
+            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-50" style={{ zIndex: 10 }}>
+              <div className="spinner-border spinner-border-sm text-primary"></div>
+            </div>
+          )}
+
+          <JudgementTable
+            judgements={judgements}
+            onEdit={setSelected}
+            onDelete={deleteJudgement}
+          />
         </div>
       </div>
 

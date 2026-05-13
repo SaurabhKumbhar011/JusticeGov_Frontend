@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { getUserEmail, getUserRole } from '../../../utils/token';
+import { getUserEmail, getUserRole } from '../../../utils/jwtUtils'; // ✅ UPDATE THIS PATH
 
 const complianceMenu = [
   { label: '📊 Dashboard',           path: '/compliance/dashboard' },

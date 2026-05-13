@@ -6,7 +6,7 @@ import {
   getDocumentsByEntity,
   verifyDocument,
 } from '../axios/registrationApi';
-import { getUserRole, decodeToken } from '../../../utils/token';
+//import { getUserRole, decodeToken } from '../../../utils/token';
 
 const STATUS_COLORS = {
   ACTIVE: 'success', PENDING: 'warning', APPROVED: 'primary',
@@ -18,8 +18,8 @@ const VERIFY_COLORS = {
 };
 
 export default function CitizenPanel() {
-  const role    = getUserRole();
-  const decoded = decodeToken();
+  const role    = localStorage.getItem('role'); // getUserRole();
+  //const decoded = decodeToken();
   const isSelf  = role === 'CITIZEN'; // citizen sees only own profile
 
   const [citizens, setCitizens]   = useState([]);
@@ -41,7 +41,7 @@ export default function CitizenPanel() {
         // CITIZEN: fetch all then filter by own userId from token
         const res  = await getAllCitizens();
         const list = res.data || [];
-        const uid  = decoded?.userId || decoded?.id || null;
+        //const uid  = decoded?.userId || decoded?.id || null;
         const own  = uid ? list.find(c => c.userId === Number(uid)) : list[0];
         setCitizens(own ? [own] : []);
       } else {

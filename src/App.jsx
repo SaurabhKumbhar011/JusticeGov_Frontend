@@ -3,15 +3,16 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import AppRoutes from './routes/AppRoutes';
 
+// ✅ Protected Route
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
 
   if (loading) {
-    return <div className="d-flex justify-content-center align-items-center min-vh-100">
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Loading...</span>
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" />
       </div>
-    </div>;
+    );
   }
 
   if (!isAuthenticated) {
@@ -19,7 +20,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -33,10 +34,10 @@ const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <AppContent />
+        <AppRoutes ProtectedRoute={ProtectedRoute} />
       </BrowserRouter>
     </AuthProvider>
   );
 };
 
-export default App; 
+export default App;

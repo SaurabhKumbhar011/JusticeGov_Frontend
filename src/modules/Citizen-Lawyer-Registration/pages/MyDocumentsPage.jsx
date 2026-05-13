@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUserRole, decodeToken } from '../../../utils/token';
+import { getUserRole, decodeToken } from '../../../utils/jwtUtils';
 import { uploadDocument, getCitizenByUserId, getLawyerByUserId, getDocuments } from '../axios/registrationApi';
 
 export default function MyDocumentsPage() {
