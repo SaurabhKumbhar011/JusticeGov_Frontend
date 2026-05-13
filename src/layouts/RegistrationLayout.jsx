@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { getUserRole, getUserEmail } from "../utils/token";
+// import { getUserRole, getUserEmail } from "../utils/token";
 import { citizenMenu, lawyerMenu, registrarMenu } from "../configs/roleMenus";
 
 function getMenuByRole(role) {
@@ -16,7 +16,7 @@ function getRoleLabel(role) {
 
 export default function RegistrationLayout() {
   const navigate  = useNavigate();
-  const role      = getUserRole();
+  const role      = localStorage.getItem('role');           // CITIZEN | LAWYER
   const email     = getUserEmail();
   const initials  = email.charAt(0).toUpperCase();
   const menuItems = getMenuByRole(role);

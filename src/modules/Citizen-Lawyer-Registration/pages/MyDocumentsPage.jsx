@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { getUserRole } from '../../../utils/token';
 import { uploadDocument } from '../axios/registrationApi';
 
 export default function MyDocumentsPage() {
-  const role      = getUserRole();           // CITIZEN | LAWYER
+  const role      = localStorage.getItem('role');           // CITIZEN | LAWYER
   const isCitizen = role === 'CITIZEN';
 
   const [form, setForm]     = useState({ ownerId: '', docType: isCitizen ? 'ID_PROOF' : 'BAR_CERTIFICATE', fileUri: '' });

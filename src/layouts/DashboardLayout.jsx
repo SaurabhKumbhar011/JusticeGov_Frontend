@@ -33,10 +33,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../contexts/AuthContext';
 
 export default function DashboardLayout() {
-  const { logout } = useAuth();
+  const { logoutUser } = useAuth();
   const navigate = useNavigate();
   const handleLogout = () => {
-    logout();
+    logoutUser();
     navigate('/login');
   };
 

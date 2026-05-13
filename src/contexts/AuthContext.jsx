@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getToken, removeToken } from '../utils/token';
-import { decodeToken } from '../utils/jwtUtils';
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {

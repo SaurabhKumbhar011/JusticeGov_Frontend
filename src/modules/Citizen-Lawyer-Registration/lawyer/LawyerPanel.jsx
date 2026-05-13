@@ -6,7 +6,7 @@ import {
   getDocumentsByEntity,
   verifyDocument,
 } from '../axios/registrationApi';
-import { getUserRole, decodeToken } from '../../../utils/token';
+//import { getUserRole, decodeToken } from '../../../utils/token';
 
 const STATUS_COLORS = {
   ACTIVE: 'success', PENDING: 'warning', APPROVED: 'primary',
@@ -18,8 +18,8 @@ const VERIFY_COLORS = {
 };
 
 export default function LawyerPanel() {
-  const role    = getUserRole();
-  const decoded = decodeToken();
+  const role    = localStorage.getItem('role'); // getUserRole();
+  //const decoded = decodeToken();
   const isSelf  = role === 'LAWYER'; // lawyer sees only own profile
 
   const [lawyers, setLawyers]     = useState([]);
@@ -41,7 +41,7 @@ export default function LawyerPanel() {
         // LAWYER: fetch all then filter by own userId from token
         const res  = await getAllLawyers();
         const list = res.data || [];
-        const uid  = decoded?.userId || decoded?.id || null;
+        //const uid  = decoded?.userId || decoded?.id || null;
         const own  = uid ? list.find(l => l.userId === Number(uid)) : list[0];
         setLawyers(own ? [own] : []);
       } else {

@@ -1,8 +1,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import RegistrationLayout from "../layouts/RegistrationLayout";
-import { getUserRole } from "../utils/token";
+import PublicLayout from "../layouts/PublicLayout";
+
 import Home from "../modules/Home/Home";
+import About from "../modules/Home/About";
+import Contact from "../modules/Home/Contact";
 
 import Judgements from "../modules/judgment-order/pages/Judgements";
 import CourtOrders from "../modules/judgment-order/pages/CourtOrders";
@@ -17,56 +20,72 @@ import MyProfilePage from "../modules/Citizen-Lawyer-Registration/pages/MyProfil
 import MyDocumentsPage from "../modules/Citizen-Lawyer-Registration/pages/MyDocumentsPage";
 import Login from "../modules/Identity-AccessManagement/Login";
 import Register from "../modules/Identity-AccessManagement/Register";
+import JudgeDashboard from "../modules/judgment-order/pages/JudgeDashboard";
 
-// Redirect to the correct landing page based on role
+/* ✅ Role-based redirect AFTER authentication */
 function RoleRedirect() {
-  const role = getUserRole();
-  if (role === "CITIZEN" || role === "LAWYER") return <Navigate to="/register/my-profile" replace />;
-  return <Navigate to="/register/dashboard" replace />;
+  const role = localStorage.getItem("role");
+
+  if (role === "JUDGE") {
+    return <Navigate to="/judgeorder/dashboard" replace />;
+  }
+
+  if (role === "CITIZEN" || role === "LAWYER") {
+    return <Navigate to="/citizenregister/dashboard" replace />;
+  }
+
+  return <Navigate to="/login" replace />;
 }
 
-export default function AppRoutes({ ProtectedRoute, isAuthenticated, user }) {
+export default function AppRoutes({ ProtectedRoute, isAuthenticated }) {
   return (
     <Routes>
+      {/* ✅ PUBLIC AREA */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Route>
 
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-      <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+      {/* ✅ AUTH */}
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />
+        }
+      />
 
-      {/* Protected Routes */}
-      {/* <Route path="/dashboard" element={
-        <ProtectedRoute>
-          {user?.role === 'ADMIN' ? <AdminPanel /> : <AppRoutes />}
-        </ProtectedRoute>
-      } /> */}
-      {/* <Route
-  path="/dashboard"
-  element={
-    <ProtectedRoute>
-      <RoleRedirect />
-    </ProtectedRoute>
-  }
-/> */}
+      {/* ✅ DASHBOARD ENTRY */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <RoleRedirect />
+          </ProtectedRoute>
+        }
+      />
 
-
-      {/* Default redirect */}
-      {/* <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} /> */}
-      {/* Judge module */}
+      {/* ✅ JUDGE MODULE */}
       <Route path="/judgeorder" element={<DashboardLayout />}>
+
+        <Route index element={<JudgeDashboard />} />
+        <Route path="dashboard" element={<JudgeDashboard />} />
+
         <Route path="judgements" element={<Judgements />} />
         <Route path="court-orders" element={<CourtOrders />} />
       </Route>
 
-
-
-      Registration module — role-aware layout
+      {/* ✅ REGISTRATION MODULE */}
       <Route path="/citizenregister" element={<RegistrationLayout />}>
         <Route index element={<RoleRedirect />} />
-
-        {/* CITIZEN & LAWYER — own profile only */}
         <Route path="my-profile" element={<MyProfilePage />} />
         <Route path="my-documents" element={<MyDocumentsPage />} />
-
-        {/* ADMIN / REGISTRAR — full access */}
         <Route path="dashboard" element={<RegistrationDashboard />} />
         <Route path="citizens" element={<CitizenPanelPage />} />
         <Route path="lawyers" element={<LawyerPanelPage />} />
@@ -74,15 +93,6 @@ export default function AppRoutes({ ProtectedRoute, isAuthenticated, user }) {
         <Route path="lawyer" element={<LawyerRegistrationPage />} />
         <Route path="document" element={<DocumentUploadPage />} />
       </Route>
-
-      {/* Root redirect */}
-      <Route
-        path="/"
-        element={
-          isAuthenticated ? <RoleRedirect /> : <Home />
-        }
-      />
-
     </Routes>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUserRole, decodeToken } from '../../../utils/token';
+// import { getUserRole, decodeToken } from '../../../utils/token';
 import {
   getAllCitizens,
   getAllLawyers,
@@ -14,7 +14,7 @@ const STATUS_COLORS = {
 };
 
 export default function MyProfilePage() {
-  const role     = getUserRole();           // CITIZEN | LAWYER
+  const role     = localStorage.getItem('role');           // CITIZEN | LAWYER
   const decoded  = decodeToken();
   const email    = decoded?.sub || '';
 
