@@ -1,44 +1,63 @@
 /* =========================
-   TOKEN ACCESS (DEV SAFE)
+   ✅ MANUAL DEV TOKEN (PRIMARY)
    ========================= */
 
-// ⚠️ TEMPORARY DEVELOPMENT TOKEN (REMOVE LATER)
+// 🔥 Always used if localStorage token not present
 const DEV_TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYXVyYWJoa3VtYmhhcjAxMUBnbWFpbC5jb20iLCJyb2xlIjoiSlVER0UiLCJpYXQiOjE3NzgzOTMxMjYsImV4cCI6MTc3ODQyOTEyNn0._D8pavLUkciSAFaDul7HETp1gGFppyLGn7gNRblXL24";
-
-export const getToken = () =>
-  localStorage.getItem("token") || DEV_TOKEN;
+  "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXJzaGFkQGdtYWlsLmNvbSIsInJvbGUiOiJSRVNFQVJDSEVSIiwiaWF0IjoxNzc4NTU5MzYwLCJleHAiOjE3Nzg1OTUzNjB9.PAtBjJEYj7ijrSk_5eqpzNYd0BkI2Tfnvs3AllH_pzU";
 
 /* =========================
-   ✅ TOKEN DECODING (FIXED)
+   ✅ TOKEN ACCESS
+   ========================= */
+
+export const getToken = () => {
+  const storedToken = localStorage.getItem("token");
+
+  // ✅ Priority: localStorage → else DEV token
+  return storedToken || DEV_TOKEN;
+};
+
+/* =========================
+   ✅ TOKEN DECODING (SAFE)
    ========================= */
 
 export const decodeToken = () => {
-  const token = getToken(); // ✅ THIS IS THE FIX
+  const token = getToken();
   if (!token) return null;
 
   try {
     const payload = token.split(".")[1];
-    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
-    return JSON.parse(atob(base64));
+    return JSON.parse(atob(payload));
   } catch (e) {
-    console.error("Failed to decode token", e);
+    console.error("❌ Failed to decode token:", e);
     return null;
   }
 };
 
 /* =========================
-   USER HELPERS
+   ✅ USER HELPERS (OPTIMIZED)
    ========================= */
 
-export const getUserEmail = () =>
-  decodeToken()?.sub || "Unknown User";
+const getDecoded = () => decodeToken();
 
-export const getUserRole = () =>
-  decodeToken()?.role || "User";
+export const getUserEmail = () => {
+  const decoded = getDecoded();
+  return decoded?.sub || "Unknown";
+};
 
-export const getJudgeId = () =>
-  decodeToken()?.userId || decodeToken()?.judgeId || null;
+export const getUserRole = () => {
+  const decoded = getDecoded();
+  return decoded?.role || "USER";
+};
+
+export const getUserId = () => {
+  const decoded = getDecoded();
+  return decoded?.userId || decoded?.judgeId || decoded?.id || null;
+};
+
+/* =========================
+   ✅ TOKEN MANAGEMENT
+   ========================= */
 
 export const setToken = (token) => {
   localStorage.setItem("token", token);

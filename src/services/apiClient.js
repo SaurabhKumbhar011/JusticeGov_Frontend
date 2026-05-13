@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken } from "../utils/token";
 
 const apiClient = axios.create({
-  baseURL: "", // ✅ API Gateway
+  baseURL: "http://localhost:9999", // ✅ FIXED
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,9 +12,11 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = getToken();
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)

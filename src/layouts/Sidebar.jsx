@@ -1,26 +1,98 @@
-// import { NavLink, useNavigate } from "react-router-dom";
+// // import { NavLink } from "react-router-dom";
 
+// // const Sidebar = () => {
+// //   return (
+// //     <div className="sidebar">
+
+// //       <h3>⚖️ JusticeGov</h3>
+
+// //       <NavLink to="/research">Research</NavLink>
+// //       <NavLink to="/hearings">Hearings</NavLink>
+
+// //     </div>
+// //   );
+// // };
+
+// // export default Sidebar;
+
+// import { NavLink } from "react-router-dom";
+
+// const Sidebar = () => {
+//   return (
+//     <div className="w-64 h-screen bg-[#0A192F] text-white flex flex-col justify-between shadow-lg">
+      
+//       {/* Top Section: Logo and Navigation Links */}
+//       <div>
+//         <div className="p-6 text-xl font-bold tracking-wide border-b border-slate-700 flex items-center gap-2">
+//           ⚖️ JusticeGov
+//         </div>
+        
+//         <nav className="flex flex-col mt-6 px-4 gap-2">
+//           {/* NavLink automatically gives us an 'isActive' property to style the currently selected tab */}
+//           <NavLink 
+//             to="/hearings" 
+//             className={({ isActive }) => 
+//               `p-3 rounded-lg transition-all duration-200 font-medium ${
+//                 isActive 
+//                   ? "bg-blue-600 text-white shadow-md" 
+//                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
+//               }`
+//             }
+//           >
+//             Hearings
+//           </NavLink>
+
+//           <NavLink 
+//             to="/research" 
+//             className={({ isActive }) => 
+//               `p-3 rounded-lg transition-all duration-200 font-medium ${
+//                 isActive 
+//                   ? "bg-blue-600 text-white shadow-md" 
+//                   : "text-slate-300 hover:bg-slate-800 hover:text-white"
+//               }`
+//             }
+//           >
+//             Research
+//           </NavLink>
+//         </nav>
+//       </div>
+
+//       {/* Bottom Section: Logout Button */}
+//       <div className="p-6">
+//         <button className="w-full py-2.5 border border-slate-500 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-all font-medium">
+//           Logout
+//         </button>
+//       </div>
+
+//     </div>
+//   );
+// };
+
+// export default Sidebar;
+
+// import { NavLink, useNavigate } from "react-router-dom";
+ 
 // export default function Sidebar() {
 //   const navigate = useNavigate();
-
+ 
 //   const handleLogout = () => {
 //     // 1. Clear the storage
-//     localStorage.removeItem("token"); 
-
-//     // 2. Since you don't have /login, just reload the app 
+//     localStorage.removeItem("token");
+ 
+//     // 2. Since you don't have /login, just reload the app
 //     // or navigate to the landing/dashboard.
 //     // window.location.reload() is the safest way to reset the app state.
-//     window.location.reload(); 
+//     window.location.reload();
 //   };
-
-//   const linkClass = ({ isActive }) => 
+ 
+//   const linkClass = ({ isActive }) =>
 //     `nav-link p-3 rounded-3 mb-1 ${isActive ? "bg-primary text-white" : "text-light-emphasis"}`;
-
+ 
 //   return (
-//     <aside 
-//       className="d-flex flex-column flex-shrink-0 p-3 text-white vh-100 sticky-top" 
-//       style={{ 
-//         width: "260px", 
+//     <aside
+//       className="d-flex flex-column flex-shrink-0 p-3 text-white vh-100 sticky-top"
+//       style={{
+//         width: "260px",
 //         background: "linear-gradient(180deg, #061a2e, #02101f)",
 //       }}
 //     >
@@ -28,16 +100,16 @@
 //         <span className="fs-4 fw-bold">⚖️ JusticeGov</span>
 //         <small className="opacity-75" style={{ fontSize: "0.75rem" }}>Judiciary System</small>
 //       </div>
-
+ 
 //       <nav className="nav nav-pills flex-column mb-auto">
 //         <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
 //         <NavLink to="/judgements" className={linkClass}>Judgements</NavLink>
 //         <NavLink to="/court-orders" className={linkClass}>Court Orders</NavLink>
 //       </nav>
-
+ 
 //       {/* Logout Button: White text, White border */}
 //       <div className="mt-auto pt-4 px-2">
-//         <button 
+//         <button
 //           onClick={handleLogout}
 //           className="btn btn-outline-light w-100 py-2 d-flex align-items-center justify-content-center gap-2 border-1 fw-semibold shadow-none"
 //           style={{ borderRadius: "8px", fontSize: "0.9rem" }}
@@ -52,16 +124,18 @@
 //     </aside>
 //   );
 // }
-
+ 
 import { NavLink } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 export default function Sidebar({ menuItems = [], onLogout }) {
-
+ 
+  const navigate = useNavigate();
+ 
   const linkClass = ({ isActive }) =>
     `nav-link p-3 rounded-3 mb-1 ${
       isActive ? "bg-primary text-white" : "text-light-emphasis"
     }`;
-
+ 
   return (
     <aside
       className="d-flex flex-column flex-shrink-0 p-3 text-white vh-100 sticky-top"
@@ -77,7 +151,7 @@ export default function Sidebar({ menuItems = [], onLogout }) {
           Judiciary System
         </small>
       </div>
-
+ 
       {/* Dynamic Navigation */}
       <nav className="nav nav-pills flex-column mb-auto">
         {menuItems.map((item) => (
@@ -90,7 +164,7 @@ export default function Sidebar({ menuItems = [], onLogout }) {
           </NavLink>
         ))}
       </nav>
-
+ 
       {/* Logout */}
       <div className="mt-auto pt-4 px-2">
         <button
@@ -104,3 +178,4 @@ export default function Sidebar({ menuItems = [], onLogout }) {
     </aside>
   );
 }
+ 

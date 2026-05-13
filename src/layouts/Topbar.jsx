@@ -15,78 +15,84 @@ export default function Topbar() {
   } catch {}
 
   return (
-    <header className="navbar navbar-expand bg-white border-bottom px-4 py-3 sticky-top">
-      {/* Changed "justify-content-between" to "justify-content-end" */}
-      <div className="container-fluid d-flex justify-content-end align-items-center">
-        
-        {/* Profile Dropdown */}
+    <header className="topbar-container">
+
+      <div className="topbar-inner">
+
+        {/* ✅ LEFT SIDE (TITLE / CONTEXT) */}
+        <div className="topbar-left">
+          <h5 className="topbar-page-title">
+            Dashboard
+          </h5>
+        </div>
+
+        {/* ✅ RIGHT SIDE (USER) */}
         <div className="dropdown">
-          <div 
-            className="d-flex align-items-center gap-3 border-0 bg-transparent p-0"
+
+          <div
+            className="topbar-user"
             role="button"
             id="profileMenu"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            style={{ cursor: "pointer" }}
           >
-            {/* Avatar Circle */}
-            <div 
-              className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm" 
-              style={{ 
-                width: "38px", 
-                height: "38px", 
-                backgroundColor: "#0f2a47",
-                fontSize: "14px" 
-              }}
-            >
+
+            {/* ✅ Avatar */}
+            <div className="avatar-circle">
               {initials}
             </div>
 
-            {/* Role Text */}
-            <div className="d-flex flex-column align-items-end d-none d-md-flex">
-              <span className="fw-bold text-dark text-uppercase mb-0" style={{ fontSize: "0.85rem", letterSpacing: "0.5px" }}>
+            {/* ✅ User Info */}
+            <div className="user-info d-none d-md-flex flex-column">
+              <span className="user-email" title={email}>
+                {email}
+              </span>
+              <span className="user-role">
                 {role}
               </span>
             </div>
+
+            {/* ✅ Dropdown Icon */}
+            <i className="bi bi-chevron-down"></i>
+
           </div>
 
-          {/* Dropdown Menu (The Hover/Click Card) */}
-          <ul 
-            className="dropdown-menu dropdown-menu-end shadow border-0 p-3 mt-2 rounded-4" 
-            aria-labelledby="profileMenu"
-            style={{ minWidth: "240px" }}
-          >
+          {/* ✅ DROPDOWN MENU */}
+          <ul className="dropdown-menu dropdown-menu-end topbar-dropdown">
+
             <li className="d-flex align-items-center gap-3">
-              {/* Larger Avatar inside dropdown */}
-              <div 
-                className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white fs-5" 
-                style={{ width: "48px", height: "48px", backgroundColor: "#0f2a47", flexShrink: 0 }}
-              >
+
+              <div className="avatar-circle large">
                 {initials}
               </div>
-              
-              {/* User Info */}
-              <div className="overflow-hidden">
-                <div 
-                  className="fw-bold text-dark text-truncate" 
-                  style={{ fontSize: "0.95rem" }}
-                  title={email}
-                >
-                  {email}
-                </div>
-                <div className="text-muted small text-capitalize">
-                  {role}
-                </div>
+
+              <div>
+                <div className="fw-bold">{email}</div>
+                <div className="text-muted small">{role}</div>
               </div>
+
             </li>
-            
-            {/* Optional: Add a divider and logout if needed later */}
-            {/* <li><hr className="dropdown-divider" /></li>
-            <li><button className="dropdown-item text-danger small rounded-2">Logout</button></li> */}
+
+            <li><hr className="dropdown-divider" /></li>
+
+            <li>
+              <button
+                className="dropdown-item text-danger"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  window.location.href = "/login";
+                }}
+              >
+                Logout
+              </button>
+            </li>
+
           </ul>
+
         </div>
 
       </div>
+
     </header>
   );
 }
