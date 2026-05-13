@@ -1,12 +1,16 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../layouts/Sidebar";
 import Topbar from "../layouts/Topbar";
-import { judgeMenu } from "../configs/courtclerkMenu";
+import { judgeMenu } from "../configs/judgeMenu"; // ✅ ADD THIS
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../contexts/AuthContext';
 
 export default function DashboardLayout() {
+  const { logoutUser } = useAuth();
+  const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
+    logoutUser();
+    navigate('/login');
   };
 
   return (
