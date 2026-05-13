@@ -37,7 +37,7 @@ export default function ComplianceLayout() {
 
       {/* Sidebar */}
       <aside className="d-flex flex-column flex-shrink-0 p-3 vh-100 sticky-top"
-        style={{ width: '260px', background: 'linear-gradient(180deg, #1a1a2e, #16213e)' }}>
+        style={{ width: '260px', background: 'linear-gradient(180deg, #0a3d62, #1e5f8e)' }}>
 
         {/* Brand */}
         <div className="d-flex flex-column mb-3 ps-2 pt-2">
