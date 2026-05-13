@@ -1,237 +1,193 @@
-import React, { useState, useEffect } from "react";
-import ReportTable from "../components/ReportTable";
+import React, { useEffect, useState } from "react";
+
+import ReportCard from "../components/ReportCard";
 import TrendChart from "../components/TrendChart";
-import { getDashboardAnalytics, generateReport } from "../../../services/reportService";
-import { decodeToken } from "../../../utils/token";
-import "bootstrap/dist/css/bootstrap.min.css";
+import ReportTable from "../components/ReportTable";
+import ReportModal from "../components/ReportModal";
 
-export default function Reports() {
-  const [analytics, setAnalytics] = useState(null);
+import { reportService } from "../../../services/reportService";
+
+const Reports = () => {
+  const [dashboard, setDashboard] = useState({
+    totalCases: 0,
+    totalHearings: 0,
+    totalJudgements: 0,
+    complianceRate: 0,
+    filedCases: 0,
+    closedCases: 0,
+    inProgressCases: 0,
+    scheduledHearings: 0,
+    cancelledHearings: 0,
+    issuedJudgements: 0,
+    draftJudgements: 0,
+  });
+
   const [reports, setReports] = useState([]);
-  const [scope, setScope] = useState("ALL");
-  const [startDate, setStartDate] = useState("2024-04-01");
-  const [endDate, setEndDate] = useState("2024-04-24");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [scope, setScope] = useState("CASE");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [searchId, setSearchId] = useState("");
 
-  let role = "USER";
-  try {
-    const decoded = decodeToken();
-    if (decoded && decoded.role) {
-      role = decoded.role;
-    }
-  } catch {}
+  const loadReports = async () => {
+    try {
+      const data = await reportService.getAllReports();
+      console.log("REPORT RESPONSE:", data);
 
-  // Fetch dashboard analytics on mount
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        setLoading(true);
-        const data = await getDashboardAnalytics();
-        setAnalytics(data);
-        setError(null);
-      } catch (err) {
-        // Use mock data as fallback for development
-        const mockData = {
-          totalCases: 12450,
-          totalHearings: 1203,
-          totalJudgements: 3456,
-          complianceRate: 94,
-          avgResolutionDays: 32,
-          filedCases: 2100,
-        };
-        setAnalytics(mockData);
-        setError("Backend not connected. Using mock data. Please configure your backend at http://localhost:8085");
-        console.warn("Using mock analytics data. Backend not available.");
-      } finally {
-        setLoading(false);
+      if (Array.isArray(data)) {
+        setReports(data);
+      } else if (Array.isArray(data.data)) {
+        setReports(data.data);
+      } else {
+        setReports([]);
       }
-    };
-    fetchAnalytics();
+    } catch (error) {
+      console.log(error);
+      setReports([]);
+    }
+  };
+
+  const loadDashboard = async () => {
+    try {
+      const data = await reportService.getDashboardAnalytics();
+      setDashboard(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboard();
+    loadReports();
   }, []);
 
-  const handleGenerateReport = async () => {
+  const handleGenerate = async () => {
+    if (!startDate || !endDate) {
+      alert("Select Start & End Date");
+      return;
+    }
+
     try {
-      setLoading(true);
-      const newReport = await generateReport(scope, startDate, endDate);
-      if (!newReport || !newReport.id) {
-        setError("Failed to generate report. No data returned.");
-        return;
-      }
-      setReports((prev) => [
-        ...prev,
-        {
-          id: newReport.id,
-          scope: newReport.scope,
-          date: newReport.generatedDate,
-          ...newReport.metrics,
-        },
-      ]);
-      setError(null);
-    } catch (err) {
-      setError("Failed to generate report. Please try again.");
-      console.error("Report error:", err);
-    } finally {
-      setLoading(false);
+      await reportService.generateReport({ scope, startDate, endDate });
+      alert("Report Generated");
+      loadReports();
+      loadDashboard();
+    } catch (error) {
+      console.log(error);
+      alert("Generation Failed");
     }
   };
 
-  const getChartData = () => {
-    if (!analytics) return [];
-    // Use today's date for the single data point
-    const today = new Date().toISOString().split('T')[0];
-    return [{
-      date: today,
-      cases: analytics.totalCases,
-      hearings: analytics.totalHearings,
-      judgements: analytics.totalJudgements,
-      compliance: analytics.complianceRate,
-    }];
+  const handleView = async (id) => {
+    try {
+      const data = await reportService.getReportById(id);
+      setSelectedReport(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const chartData = [
+    { name: "Filed", value: dashboard.filedCases },
+    { name: "Closed", value: dashboard.closedCases },
+    { name: "Pending", value: dashboard.inProgressCases },
+  ];
+
+  const filteredReports = reports.filter((report) =>
+    report.id.toString().includes(searchId)
+  );
+
   return (
-    <div className="container-fluid py-4 px-4">
-      {/* Error Alert */}
-      {error && (
-        <div className="alert alert-warning alert-dismissible fade show mb-4" role="alert">
-          <i className="bi bi-exclamation-triangle me-2"></i>{error}
-          <button type="button" className="btn-close" onClick={() => setError(null)}></button>
-        </div>
-      )}
+    <div style={{ padding: "30px", background: "#f4f7fb", minHeight: "100vh" }}>
+      <h1 style={{ marginBottom: "25px" }}>Reporting & Analytics</h1>
 
-      {/* Updated Header Card with Filters */}
-      <div className="card border-0 shadow-sm rounded-3 p-4 mb-4">
-        <div className="row align-items-center mb-4">
-          <div className="col">
-            <h4 className="fw-bold text-dark mb-0">Reporting & Analytics Dashboard</h4>
-          </div>
-        </div>
+      {/* Filters */}
+      <div
+        style={{
+          background: "#fff",
+          padding: "20px",
+          borderRadius: "20px",
+          marginBottom: "30px",
+          display: "flex",
+          gap: "15px",
+        }}
+      >
+        <select
+          value={scope}
+          onChange={(e) => setScope(e.target.value)}
+          style={{ padding: "12px", borderRadius: "10px" }}
+        >
+          <option value="CASE">CASE</option>
+          <option value="HEARING">HEARING</option>
+          <option value="JUDGEMENT">JUDGEMENT</option>
+        </select>
 
-        {/* Filter Row */}
-        <div className="row g-3">
-          <div className="col-md-4">
-            <label className="form-label fw-semibold text-dark small mb-2">Scope</label>
-            <select 
-              className="form-select border-0 bg-light rounded-2 py-2" 
-              value={scope} 
-              onChange={(e) => setScope(e.target.value)}
-            >
-              <option value="ALL">All Scope</option>
-              <option value="CASE">Cases</option>
-              <option value="HEARING">Hearings</option>
-              <option value="JUDGEMENT">Judgements</option>
-              <option value="COMPLIANCE">Compliance</option>
-            </select>
-          </div>
-          <div className="col-md-4">
-            <label className="form-label fw-semibold text-dark small mb-2">Start Date</label>
-            <input 
-              type="date" 
-              className="form-control border-0 bg-light rounded-2 py-2" 
-              value={startDate} 
-              onChange={(e) => setStartDate(e.target.value)} 
-            />
-          </div>
-          <div className="col-md-4">
-            <label className="form-label fw-semibold text-dark small mb-2">End Date</label>
-            <input 
-              type="date" 
-              className="form-control border-0 bg-light rounded-2 py-2" 
-              value={endDate} 
-              onChange={(e) => setEndDate(e.target.value)} 
-            />
-          </div>
-        </div>
+        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+
+        <button
+          onClick={handleGenerate}
+          style={{
+            background: "#2563eb",
+            color: "#fff",
+            border: "none",
+            padding: "12px 22px",
+            borderRadius: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Generate Report
+        </button>
       </div>
 
-      {/* Trend Analysis Chart */}
-      <div className="card border-0 shadow-sm rounded-3 p-4 mb-4">
-        <h5 className="fw-bold text-dark mb-3">Trend Analysis</h5>
-        <div style={{ height: "350px" }} className="bg-light rounded-2 p-3">
-          {loading ? (
-            <div className="d-flex align-items-center justify-content-center h-100">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          ) : analytics ? (
-            <TrendChart data={getChartData(scope)} />
-          ) : (
-            <div className="d-flex align-items-center justify-content-center h-100">
-              <p className="text-muted">No data available</p>
-            </div>
-          )}
-        </div>
+      {/* Dashboard Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "20px" }}>
+        <ReportCard title="Total Cases" value={dashboard.totalCases} color="#2563eb" icon="📁" />
+        <ReportCard title="Hearings" value={dashboard.totalHearings} color="#16a34a" icon="⚖️" />
+        <ReportCard title="Judgements" value={dashboard.totalJudgements} color="#f59e0b" icon="📜" />
+        <ReportCard
+          title="Compliance"
+          value={`${dashboard.complianceRate}%`}
+          color="#ef4444"
+          icon="📊"
+        />
       </div>
 
-      {/* Generate Report Section */}
-      <div className="card border-0 shadow-sm rounded-3 p-4 mb-4">
-        <h5 className="fw-bold text-dark mb-3">Generate Report</h5>
-        <div className="row g-3">
-          <div className="col-md-3">
-            <label className="form-label fw-semibold text-dark small mb-2">Scope</label>
-            <select 
-              className="form-select border-0 bg-light rounded-2 py-2" 
-              value={scope} 
-              onChange={(e) => setScope(e.target.value)}
-            >
-              <option value="CASE">Case</option>
-              <option value="HEARING">Hearing</option>
-              <option value="JUDGEMENT">Judgement</option>
-              <option value="COMPLIANCE">Compliance</option>
-              <option value="ALL">All</option>
-            </select>
-          </div>
-          <div className="col-md-3">
-            <label className="form-label fw-semibold text-dark small mb-2">Start Date</label>
-            <input 
-              type="date" 
-              className="form-control border-0 bg-light rounded-2 py-2" 
-              value={startDate} 
-              onChange={(e) => setStartDate(e.target.value)} 
-            />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label fw-semibold text-dark small mb-2">End Date</label>
-            <input 
-              type="date" 
-              className="form-control border-0 bg-light rounded-2 py-2" 
-              value={endDate} 
-              onChange={(e) => setEndDate(e.target.value)} 
-            />
-          </div>
-          <div className="col-md-3 d-flex align-items-end">
-            <button 
-              type="button" 
-              onClick={handleGenerateReport} 
-              disabled={loading}
-              className="btn btn-primary w-100 fw-semibold py-2 rounded-2"
-            >
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Generating...
-                </>
-              ) : (
-                "Generate Report"
-              )}
-            </button>
-          </div>
-        </div>
+      {/* Trend Charts */}
+      <div
+        style={{
+          marginTop: "30px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "20px",
+        }}
+      >
+        <TrendChart title="Case Trend" data={chartData} color="#2563eb" dataKey="value" />
+        <TrendChart title="Hearing Trend" data={chartData} color="#16a34a" dataKey="value" />
+        <TrendChart title="Judgement Trend" data={chartData} color="#f59e0b" dataKey="value" />
       </div>
 
-      {/* Generated Reports Table */}
-      <div className="card border-0 shadow-sm rounded-3 p-4">
-        <h5 className="fw-bold text-dark mb-3">Generated Reports</h5>
-        {reports.length === 0 ? (
-          <div className="text-center text-muted py-5">
-            <i className="bi bi-inbox fs-1 mb-3 d-block"></i>
-            <p>No reports generated yet. Click "Generate Report" to create one.</p>
-          </div>
-        ) : (
-          <ReportTable reports={reports} role={role} />
-        )}
+      {/* Search + Table */}
+      <div style={{ marginTop: "25px" }}>
+        <input
+          type="text"
+          placeholder="Search By ID"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          style={{
+            padding: "12px",
+            width: "250px",
+            borderRadius: "10px",
+            border: "1px solid #ddd",
+          }}
+        />
       </div>
+
+      <ReportTable reports={filteredReports} onView={handleView} onDownload={reportService.downloadReport} />
+
+      <ReportModal report={selectedReport} onClose={() => setSelectedReport(null)} />
     </div>
   );
-}
+};
+
+export default Reports;

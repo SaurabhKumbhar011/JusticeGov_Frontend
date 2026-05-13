@@ -3,11 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Register from './modules/Identity-AccessManagement/Register';
 import Login from './modules/Identity-AccessManagement/Login';
-// import AppRoutes from './routes/AppRoutes';
-import AdminPanel from './components/AdminPanel'; // We'll create this
-import Judgements from './modules/judgment-order/pages/Judgements';
-import DashboardLayout from './layouts/DashboardLayout';
-import CourtOrders from './modules/judgment-order/pages/CourtOrders';
+import AppRoutes from './routes/AppRoutes';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -32,29 +28,19 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 const AppContent = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-      <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
+      <Route path="/register" element={isAuthenticated ? <Navigate to="/" replace /> : <Register />} />
 
-      {/* Protected Routes */}
-      {/* <Route path="/dashboard" element={
-        <ProtectedRoute>
-          {user?.role === 'ADMIN' ? <AdminPanel /> : <AppRoutes />}
-        </ProtectedRoute>
-      } /> */}
-
-      <Route path="/judgeorder" element={<DashboardLayout />}>
-        <Route path="judgements" element={<Judgements />} />
-        <Route path="court-orders" element={<CourtOrders />} />
-      </Route>
-
-
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+      {/* All other routes handled by AppRoutes */}
+      <Route path="/*" element={<AppRoutes />} />
+      
+      {/* Default redirect for unauthenticated users */}
+      <Route path="/" element={<Navigate to={isAuthenticated ? "/" : "/login"} replace />} />
     </Routes>
   );
 };

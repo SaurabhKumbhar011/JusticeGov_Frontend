@@ -1,41 +1,56 @@
-import axios from "axios";
+import apiClient from "./apiClient";
 
-const API_BASE = "/api"; // Use Vite proxy for API calls
+const BASE_URL = "/reports";
 
-const apiClient = axios.create({
-  baseURL: API_BASE,
-  // ...existing axios configuration...
-});
-
-// ...existing code...
-
-export const generateReport = async (scope, startDate, endDate) => {
-  try {
-    const response = await apiClient.post(`/reports/generate`, {
-      scope,
-      startDate,
-      endDate,
-    });
+export const reportService = {
+  // ================= ANALYTICS =================
+  async getDashboardAnalytics() {
+    const response = await apiClient.get("/analytics/dashboard");
     return response.data;
-  } catch (error) {
-    // ...existing error handling...
-  }
-};
+  },
 
-export const getReportById = async (id) => {
-  try {
-    const response = await apiClient.get(`/reports/${id}`);
+  // ================= REPORTS =================
+  async generateReport(reportData) {
+    const response = await apiClient.post(`${BASE_URL}/generate`, reportData);
     return response.data;
-  } catch (error) {
-    // ...existing error handling...
-  }
-};
+  },
 
-export const getDashboardAnalytics = async () => {
-  try {
-    const response = await apiClient.get(`/analytics/dashboard`);
+  async getAllReports() {
+    const response = await apiClient.get(`${BASE_URL}/all`);
     return response.data;
-  } catch (error) {
-    // ...existing error handling...
-  }
+  },
+
+  async getReportById(id) {
+    const response = await apiClient.get(`${BASE_URL}/${id}`);
+    return response.data;
+  },
+
+  // ================= DOWNLOAD =================
+  async downloadReport(report) {
+    const content = `
+JUSTICE GOV REPORT
+
+REPORT ID : ${report.id}
+SCOPE : ${report.scope}
+GENERATED DATE : ${report.generatedDate}
+START DATE : ${report.startDate}
+END DATE : ${report.endDate}
+
+METRICS :
+${report.metrics}
+`;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `REPORT_${report.id}.txt`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url);
+  },
 };

@@ -3,7 +3,8 @@ import { setToken, removeToken } from "../utils/token";
 
 export const login = async (credentials) => {
   const response = await apiClient.post("/auth/login", credentials);
-  return response.data; // Return the full response, including token
+  setToken(response.data.token); // ✅ store token immediately
+  return response.data;
 };
 
 export const logout = () => {
@@ -27,7 +28,7 @@ export const forgotPassword = async (email) => {
 
 export const getAuditLogs = async (adminId) => {
   const response = await apiClient.get("/auth/logs", {
-    headers: { "admin-id": adminId }
+    headers: { "admin-id": adminId },
   });
   return response.data;
 };

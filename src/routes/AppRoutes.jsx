@@ -7,6 +7,10 @@ import Judgements from "../modules/judgment-order/pages/Judgements";
 import CourtOrders from "../modules/judgment-order/pages/CourtOrders";
 import Reports from "../modules/Report-Analysis/pages/reports";
 
+// ✅ Correct import path (plural if needed)
+import Notifications from "../modules/Notification/pages/Notifications";
+ 
+
 import RegistrationDashboard    from "../modules/Citizen-Lawyer-Registration/pages/RegistrationDashboard";
 import CitizenRegistrationPage  from "../modules/Citizen-Lawyer-Registration/pages/CitizenRegistrationPage";
 import LawyerRegistrationPage   from "../modules/Citizen-Lawyer-Registration/pages/LawyerRegistrationPage";
@@ -23,7 +27,6 @@ import ComplianceNewPage        from "../modules/Compliance-Audit-Management/com
 import AuditListPage            from "../modules/Compliance-Audit-Management/audit/pages/AuditListPage";
 import AuditNewPage             from "../modules/Compliance-Audit-Management/audit/pages/AuditNewPage";
 
-// Redirect to the correct landing page based on role
 function RoleRedirect() {
   const role = getUserRole();
   if (role === "CITIZEN")            return <Navigate to="/citizenregister/my-profile" replace />;
@@ -36,28 +39,28 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* Judge module */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/judgements"   element={<Judgements />} />
-        <Route path="/court-orders" element={<CourtOrders />} />
-        <Route path="/reports" element={<Reports />} />
-        {/* Add more routes here if needed */}
+      <Route path="/" element={<DashboardLayout />}>
+        <Route path="judgements"   element={<Judgements />} />
+        <Route path="court-orders" element={<CourtOrders />} />
+        <Route path="reports"      element={<Reports />} />
+        <Route path="notifications" element={<Notifications />} />
       </Route>
 
-      {/* CITIZEN module — citizen-only layout */}
+      {/* Citizen module */}
       <Route path="/citizenregister" element={<RegistrationLayout />}>
         <Route index element={<Navigate to="/citizenregister/my-profile" replace />} />
         <Route path="my-profile"   element={<MyProfilePage />} />
         <Route path="my-documents" element={<MyDocumentsPage />} />
       </Route>
 
-      {/* LAWYER module — lawyer-only layout */}
+      {/* Lawyer module */}
       <Route path="/lawyerregister" element={<RegistrationLayout />}>
         <Route index element={<Navigate to="/lawyerregister/my-profile" replace />} />
         <Route path="my-profile"   element={<MyProfilePage />} />
         <Route path="my-documents" element={<MyDocumentsPage />} />
       </Route>
 
-      {/* ADMIN / REGISTRAR — full access */}
+      {/* Admin / Registrar */}
       <Route path="/register" element={<RegistrationLayout />}>
         <Route index element={<Navigate to="/register/citizens" replace />} />
         <Route path="citizens"     element={<CitizenPanelPage />} />
@@ -67,7 +70,7 @@ export default function AppRoutes() {
         <Route path="document"     element={<DocumentUploadPage />} />
       </Route>
 
-      {/* Compliance Officer module */}
+      {/* Compliance Officer */}
       <Route path="/compliance" element={<ComplianceLayout />}>
         <Route index element={<Navigate to="/compliance/dashboard" replace />} />
         <Route path="dashboard"    element={<ComplianceDashboard />} />
@@ -77,8 +80,8 @@ export default function AppRoutes() {
         <Route path="audits/new"   element={<AuditNewPage />} />
       </Route>
 
-      {/* Root redirect */}
-      <Route path="/" element={<RoleRedirect />} />
+      {/* Catch-all */}
+      <Route path="*" element={<RoleRedirect />} />
     </Routes>
   );
 }

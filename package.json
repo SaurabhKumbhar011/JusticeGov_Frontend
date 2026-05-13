@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "apexcharts": "^5.11.0",
     "axios": "^1.16.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
@@ -17,8 +18,10 @@
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "react": "^18.2.0",
+    "react-apexcharts": "^2.1.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.26.2",
+    "recharts": "^3.8.1",
     "start": "^5.1.0"
   },
   "devDependencies": {
