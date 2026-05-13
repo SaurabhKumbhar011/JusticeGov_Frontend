@@ -80,7 +80,9 @@ export default function ComplianceLayout() {
         <header className="d-flex align-items-center justify-content-between px-4 py-3 border-bottom bg-white"
           style={{ minHeight: '64px' }}>
           <div>
-            <span className="fw-bold text-dark">Compliance & Audit Management Portal</span>
+            <span className="fw-bold text-dark">
+              {role === 'AUDITOR' ? 'Audit Management Portal' : 'Compliance Management Portal'}
+            </span>
           </div>
           <div className="d-flex align-items-center gap-3">
             <div className="d-flex align-items-center gap-2">

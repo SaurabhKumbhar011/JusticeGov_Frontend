@@ -15,7 +15,9 @@ export const getComplianceRecordById = async (id) =>
 export const resolveComplianceRecord = async (id, notes) =>
     api.put(`http://localhost:8086/api/compliance/records/${id}/resolve?notes=${encodeURIComponent(notes)}`);
 
+
 // GET    /api/compliance/count?start=&end=
+
 export const getComplianceCount = async (start, end) =>
     api.get(`http://localhost:8086/api/compliance/count?start=${start}&end=${end}`);
 // GET    /api/compliance/result-count?result=&start=&end=

@@ -84,29 +84,14 @@ export default function AppRoutes() {
         <Route path="document"     element={<DocumentUploadPage />} />
       </Route>
 
-      {/* Compliance Officer module */}
+      {/* Compliance Officer & Auditor module */}
       <Route path="/compliance" element={<ComplianceLayout />}>
         <Route index element={<Navigate to="/compliance/dashboard" replace />} />
-        <Route
-          path="dashboard"
-          element={getUserRole() === 'AUDITOR' ? <Navigate to="/compliance/audits" replace /> : <ComplianceDashboard />}
-        />
-        <Route
-          path="records"
-          element={getUserRole() === 'AUDITOR' ? <Navigate to="/compliance/audits" replace /> : <ComplianceListPage />}
-        />
-        <Route
-          path="records/new"
-          element={getUserRole() === 'AUDITOR' ? <Navigate to="/compliance/audits" replace /> : <ComplianceNewPage />}
-        />
-        <Route
-          path="audits"
-          element={getUserRole() === 'COMPLIANCE_OFFICER' ? <Navigate to="/compliance/dashboard" replace /> : <AuditListPage />}
-        />
-        <Route
-          path="audits/new"
-          element={getUserRole() === 'COMPLIANCE_OFFICER' ? <Navigate to="/compliance/dashboard" replace /> : <AuditNewPage />}
-        />
+        <Route path="dashboard"    element={<ComplianceDashboard />} />
+        <Route path="records"      element={<ComplianceListPage />} />
+        <Route path="records/new"  element={<ComplianceNewPage />} />
+        <Route path="audits"       element={<AuditListPage />} />
+        <Route path="audits/new"   element={<AuditNewPage />} />
       </Route>
 
       {/* Root redirect */}
