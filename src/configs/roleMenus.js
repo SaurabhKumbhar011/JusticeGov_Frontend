@@ -42,8 +42,7 @@ export const complianceOfficerMenu = [
 // =======================
 export const researcherMenu = [
   { label: "📊 Dashboard",         path: "/research" },
-  { label: "📚 Research Projects", path: "/research/projects" },
-  { label: "💰 Grants",            path: "/research/grants" },
+
 ];
 
 // =======================
