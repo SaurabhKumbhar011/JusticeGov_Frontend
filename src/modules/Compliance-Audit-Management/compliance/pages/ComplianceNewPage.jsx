@@ -32,7 +32,6 @@ export default function ComplianceNewPage() {
     <div>
       <div className="mb-4">
         <h4 className="fw-bold text-dark mb-1">➕ Add Compliance Record</h4>
-        <p className="text-muted small mb-0"><code className="text-danger">POST /api/compliance/records</code></p>
       </div>
 
       <div className="card border-0 shadow-sm rounded-4 p-4" style={{ maxWidth: '640px' }}>

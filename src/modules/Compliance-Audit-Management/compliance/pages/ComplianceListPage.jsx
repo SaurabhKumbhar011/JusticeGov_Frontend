@@ -7,6 +7,20 @@ const RESULT_COLORS = {
   NON_COMPLIANT: 'danger', WARNING: 'warning',
 };
 
+const formatDate = (value) => value ? new Date(value).toLocaleDateString() : '—';
+
+const normalizeRecord = (record) => ({
+  complianceID: record.complianceID ?? record.id ?? record.recordId ?? '—',
+  entityId: record.entityId ?? record.ownerId ?? record.citizenId ?? record.lawyerId ?? '—',
+  officerId: record.officerId ?? record.officerID ?? record.auditorId ?? '—',
+  type: record.type ?? record.complianceType ?? '—',
+  result: record.result ?? record.status ?? 'UNKNOWN',
+  date: formatDate(record.date ?? record.createdDate ?? record.uploadedDate),
+  isResolved: record.isResolved ?? record.resolved ?? false,
+  notes: record.notes ?? record.correctiveActionNotes ?? record.description ?? '—',
+  correctiveActionNotes: record.correctiveActionNotes ?? record.notes ?? '',
+});
+
 export default function ComplianceListPage() {
   const [records, setRecords]     = useState([]);
   const [loading, setLoading]     = useState(true);
@@ -20,7 +34,7 @@ export default function ComplianceListPage() {
     setLoading(true); setError('');
     try {
       const res = await getAllComplianceRecords();
-      setRecords(res.data || []);
+      setRecords(Array.isArray(res.data) ? res.data : res.data?.data ?? []);
     } catch (e) {
       setError(e?.response?.data?.message || 'Failed to load compliance records.');
     } finally { setLoading(false); }
@@ -37,16 +51,19 @@ export default function ComplianceListPage() {
       setSelected(null); setNotes('');
       fetchAll();
     } catch (e) {
-      setMsg(e?.response?.data?.message || 'Resolve failed.');
+      const errorText = e?.response?.data?.message || e?.message || 'Resolve failed.';
+      setMsg(errorText);
+      console.error('Resolve error:', e?.response?.data || e?.message || e);
     } finally { setResolving(false); }
   };
+
+  const normalizedRecords = records.map(normalizeRecord);
 
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between mb-4">
         <div>
           <h4 className="fw-bold text-dark mb-1">📋 Compliance Records</h4>
-          <p className="text-muted small mb-0"><code className="text-danger">GET /api/compliance/records</code></p>
         </div>
         <div className="d-flex gap-2">
           <button className="btn btn-sm btn-outline-secondary fw-semibold" onClick={fetchAll}>↻ Refresh</button>
@@ -78,7 +95,7 @@ export default function ComplianceListPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {records.map((r) => (
+                      {normalizedRecords.map((r) => (
                         <tr key={r.complianceID} className={selected?.complianceID === r.complianceID ? 'table-active' : ''}>
                           <td className="ps-4 text-muted small">#{r.complianceID}</td>
                           <td className="fw-semibold small">{r.entityId}</td>
@@ -148,11 +165,6 @@ export default function ComplianceListPage() {
                 {!selected.isResolved && (
                   <>
                     <hr className="my-3" />
-                    <small className="text-muted d-block mb-2">
-                      <code className="text-danger" style={{ fontSize: '0.68rem' }}>
-                        PUT /api/compliance/records/{selected.complianceID}/resolve?notes=
-                      </code>
-                    </small>
                     <label className="form-label fw-semibold text-secondary small text-uppercase">Corrective Action Notes</label>
                     <textarea className="form-control form-control-sm mb-2" rows={3}
                       placeholder="Describe the corrective action taken..."

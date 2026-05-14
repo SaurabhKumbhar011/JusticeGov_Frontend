@@ -54,8 +54,10 @@
 // }
 
 import { NavLink } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 export default function Sidebar({ menuItems = [], onLogout }) {
+  
+  const navigate = useNavigate();
 
   const linkClass = ({ isActive }) =>
     `nav-link p-3 rounded-3 mb-1 ${

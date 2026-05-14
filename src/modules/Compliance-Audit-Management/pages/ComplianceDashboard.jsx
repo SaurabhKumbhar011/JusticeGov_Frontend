@@ -1,57 +1,42 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllComplianceRecords } from '../compliance/axios/complianceApi';
-import { getAllAudits } from '../audit/axios/auditApi';
 
 export default function ComplianceDashboard() {
   const [records, setRecords] = useState([]);
-  const [audits, setAudits]   = useState([]);
+  
+
+  const formatDate = (value) => value ? new Date(value).toLocaleDateString() : '—';
 
   useEffect(() => {
-    getAllComplianceRecords().then(r => setRecords(r.data || [])).catch(() => {});
-    getAllAudits().then(r => setAudits(r.data || [])).catch(() => {});
+    const load = async () => {
+      try {
+        const recordsRes = await getAllComplianceRecords();
+        const recordsData = Array.isArray(recordsRes.data)
+          ? recordsRes.data
+          : recordsRes.data?.data ?? [];
+        setRecords(recordsData);
+      } catch (e) {
+        // Swallow dashboard load errors and keep the UI clean.
+      }
+    };
+    load();
   }, []);
 
-  const total      = records.length;
-  const resolved   = records.filter(r => r.isResolved).length;
-  const unresolved = total - resolved;
-  const openAudits = audits.filter(a => a.status === 'OPEN').length;
-
-  const stats = [
-    { label: 'Total Records',  value: total,      color: '#1a1a2e', icon: '📋' },
-    { label: 'Resolved',       value: resolved,   color: '#27ae60', icon: '✅' },
-    { label: 'Unresolved',     value: unresolved, color: '#e74c3c', icon: '⚠️' },
-    { label: 'Open Audits',    value: openAudits, color: '#e67e22', icon: '🔍' },
-  ];
+  // Compliance officer dashboard removed numeric summary cards
 
   const quickActions = [
     { label: 'Compliance Records', to: '/compliance/records',     icon: '📋', color: '#1a1a2e', desc: 'View and manage all compliance records.' },
     { label: 'Add Record',         to: '/compliance/records/new', icon: '➕', color: '#e74c3c', desc: 'Create a new compliance record.' },
-    { label: 'Audits',             to: '/compliance/audits',      icon: '🔍', color: '#16213e', desc: 'View all audit records.' },
-    { label: 'New Audit',          to: '/compliance/audits/new',  icon: '📝', color: '#e67e22', desc: 'Create a new audit record.' },
   ];
 
   return (
     <div>
       <div className="mb-4">
         <h4 className="fw-bold text-dark mb-1">Compliance Officer Dashboard</h4>
-        <p className="text-muted small mb-0">Overview of compliance records and audit activities — Module 4.7</p>
       </div>
 
-      {/* Stats */}
-      <div className="row g-3 mb-4">
-        {stats.map((s) => (
-          <div className="col-md-3 col-sm-6" key={s.label}>
-            <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
-              <div className="d-flex align-items-center justify-content-between mb-2">
-                <span style={{ fontSize: '1.8rem' }}>{s.icon}</span>
-                <span className="fw-bold fs-4" style={{ color: s.color }}>{s.value}</span>
-              </div>
-              <p className="text-muted small fw-semibold mb-0">{s.label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Stats removed for compliance officer dashboard */}
 
       {/* Quick Actions */}
       <h6 className="fw-bold text-secondary text-uppercase small mb-3">Quick Actions</h6>

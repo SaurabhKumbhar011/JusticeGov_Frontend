@@ -1,17 +1,13 @@
-import { decodeToken } from "../utils/token";
-
 export default function Topbar() {
   let email = "Unknown User";
   let role = "User";
   let initials = "U";
 
   try {
-    const decoded = decodeToken();
-    if (decoded) {
-      email = decoded.sub || email;
-      role = decoded.role || role;
-      initials = email.charAt(0).toUpperCase();
-    }
+    email=localStorage.getItem('email');
+    role=localStorage.getItem('role');
+    initials = email.charAt(0).toUpperCase();
+    
   } catch {}
 
   return (

@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-
+ 
 // Public Endpoints
 export const login = async (credentials) => {
   console.log('📤 Sending login request with:', credentials);
@@ -16,7 +16,7 @@ export const login = async (credentials) => {
     throw error;
   }
 };
-
+ 
 export const register = async (userData) => {
   console.log('📤 Sending register request with:', userData);
   try {
@@ -32,12 +32,12 @@ export const register = async (userData) => {
     throw error;
   }
 };
-
+ 
 export const forgotPassword = async (email) => {
   const response = await apiClient.post('/auth/forgot-password', { email });
   return response.data;
 };
-
+ 
 export const resetPassword = async ({ email, token, password }) => {
   const response = await apiClient.post('/auth/reset-password', {
     email,
@@ -48,12 +48,12 @@ export const resetPassword = async ({ email, token, password }) => {
   });
   return response.data;
 };
-
+ 
 export const validateToken = async () => {
   const response = await apiClient.get('/auth/validate');
   return response.data;
 };
-
+ 
 // Admin-Only Endpoints
 export const getAuditLogs = async (adminId) => {
   const response = await apiClient.get('/auth/logs', {
@@ -61,22 +61,27 @@ export const getAuditLogs = async (adminId) => {
   });
   return response.data;
 };
-
+ 
+export const getAllUsers = async () => {
+  const response = await apiClient.get('/auth/users/all');
+  return response.data;
+};
+ 
 export const approveUser = async (email) => {
   const response = await apiClient.put(`/auth/approve/${encodeURIComponent(email)}`);
   return response.data;
 };
-
+ 
 export const suspendUser = async (email) => {
   const response = await apiClient.put(`/auth/suspend/${encodeURIComponent(email)}`);
   return response.data;
 };
-
+ 
 export const reactivateUser = async (email) => {
   const response = await apiClient.put(`/auth/reactivate/${encodeURIComponent(email)}`);
   return response.data;
 };
-
+ 
 export const getUserById = async (userId) => {
   const response = await apiClient.get(`/auth/users/${userId}`);
   return response.data;

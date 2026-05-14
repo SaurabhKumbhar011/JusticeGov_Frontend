@@ -1,38 +1,37 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// Explicit extension to resolve ambiguity
-import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'; 
-import Login from './Pages/Login.jsx';
-import AdminDashboard from './Pages/AdminDashboard.jsx';
+import {BrowserRouter, Navigate , Route, Routes} from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import AppRoutes from './routes/AppRoutes';
 
-const ProtectedRoute = ({ children, role }) => {
+// ✅ Protected Route
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
-  
-  if (loading) return null;
-  if (!isAuthenticated) return <Navigate to="/login" />;
-  if (role && user.role !== role) return <Navigate to="/login" />;
-  
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 };
 
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route 
-            path="/admin-dashboard" 
-            element={
-              <ProtectedRoute role="ADMIN">
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          {/* Default Redirection */}
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </Router>
+      <BrowserRouter>
+        <AppRoutes ProtectedRoute={ProtectedRoute} />
+      </BrowserRouter>
     </AuthProvider>
   );
 };

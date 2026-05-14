@@ -30,3 +30,21 @@ export const decodeToken = () => {
 // ✅ ADD THIS
 export const getUserId = () =>
   decodeToken()?.userId || decodeToken()?.judgeId || decodeToken()?.id;
+
+
+export const getUserEmail = () =>
+  decodeToken()?.sub || "Unknown User";
+
+export const getUserRole = () =>
+  decodeToken()?.role || "User";
+
+export const getJudgeId = () =>
+  decodeToken()?.userId || decodeToken()?.judgeId || null;
+
+export const setToken = (token) => {
+  localStorage.setItem("token", sanitizeToken(token));
+};
+
+export const removeToken = () => {
+  localStorage.removeItem("token");
+};

@@ -1,14 +1,14 @@
 export const judgeMenu = [
   {
     label: "Dashboard",
-    path: "/dashboard"
+    path: "/judgeorder/dashboard"
   },
   {
     label: "Judgements",
-    path: "/judgements"
+    path: "/judgeorder/judgements"
   },
   {
     label: "Court Orders",
-    path: "/court-orders"
+    path: "/judgeorder/court-orders"
   }
 ];

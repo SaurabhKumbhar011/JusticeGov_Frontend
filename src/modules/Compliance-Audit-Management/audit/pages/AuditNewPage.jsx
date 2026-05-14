@@ -31,7 +31,6 @@ export default function AuditNewPage() {
     <div>
       <div className="mb-4">
         <h4 className="fw-bold text-dark mb-1">➕ New Audit</h4>
-        <p className="text-muted small mb-0"><code className="text-dark">POST /api/audits</code></p>
       </div>
 
       <div className="card border-0 shadow-sm rounded-4 p-4" style={{ maxWidth: '640px' }}>
