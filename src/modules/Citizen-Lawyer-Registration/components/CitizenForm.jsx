@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const EMPTY = { userId: '', name: '', dob: '', gender: '', address: '', contactInfo: '' };
+const EMPTY = { name: '', dob: '', gender: '', address: '', contactInfo: '' };
 
 export default function CitizenForm({ onSubmit, status }) {
   const [form, setForm] = useState(EMPTY);
@@ -9,18 +9,13 @@ export default function CitizenForm({ onSubmit, status }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...form, userId: Number(form.userId) });
+    onSubmit(form);
     setForm(EMPTY);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="row g-3">
-        <div className="col-md-6">
-          <label className="form-label fw-semibold text-secondary small text-uppercase">User ID</label>
-          <input className="form-control" name="userId" type="number" placeholder="e.g. 101"
-            value={form.userId} onChange={handleChange} required />
-        </div>
         <div className="col-md-6">
           <label className="form-label fw-semibold text-secondary small text-uppercase">Full Name</label>
           <input className="form-control" name="name" placeholder="e.g. John Doe"

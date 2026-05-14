@@ -1,10 +1,13 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { getUserEmail, getUserRole } from '../../../utils/token';
+import { getUserEmail, getUserRole } from '../../../utils/jwtUtils'; // ✅ UPDATE THIS PATH
 
 const complianceMenu = [
   { label: '📊 Dashboard',           path: '/compliance/dashboard' },
   { label: '📋 Compliance Records',  path: '/compliance/records' },
   { label: '➕ Add Record',           path: '/compliance/records/new' },
+];
+
+const auditorMenu = [
   { label: '🔍 Audits',              path: '/compliance/audits' },
   { label: '➕ New Audit',            path: '/compliance/audits/new' },
 ];
@@ -17,18 +20,24 @@ export default function ComplianceLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/compliance');
+    navigate('/login');
   };
 
   const linkClass = ({ isActive }) =>
     `nav-link px-3 py-2 rounded-3 mb-1 fw-semibold ${isActive ? 'bg-white text-dark' : 'text-white-50'}`;
+
+  const menuItems = role === 'AUDITOR'
+    ? auditorMenu
+    : role === 'COMPLIANCE_OFFICER'
+      ? complianceMenu
+      : [...complianceMenu, ...auditorMenu];
 
   return (
     <div className="d-flex vh-100 overflow-hidden" style={{ background: '#f0f4f8' }}>
 
       {/* Sidebar */}
       <aside className="d-flex flex-column flex-shrink-0 p-3 vh-100 sticky-top"
-        style={{ width: '260px', background: 'linear-gradient(180deg, #1a1a2e, #16213e)' }}>
+        style={{ width: '260px', background: 'linear-gradient(180deg, #0a3d62, #1e5f8e)' }}>
 
         {/* Brand */}
         <div className="d-flex flex-column mb-3 ps-2 pt-2">
@@ -47,7 +56,7 @@ export default function ComplianceLayout() {
 
         {/* Nav */}
         <nav className="nav nav-pills flex-column mb-auto">
-          {complianceMenu.map((item) => (
+          {menuItems.map((item) => (
             <NavLink key={item.path} to={item.path} end className={linkClass}>
               {item.label}
             </NavLink>
@@ -71,18 +80,29 @@ export default function ComplianceLayout() {
         <header className="d-flex align-items-center justify-content-between px-4 py-3 border-bottom bg-white"
           style={{ minHeight: '64px' }}>
           <div>
-            <span className="fw-bold text-dark">Compliance & Audit Management Portal</span>
-            <span className="ms-3 badge bg-danger small">Module 4.7</span>
+            <span className="fw-bold text-dark">
+              {role === 'AUDITOR' ? 'Audit Management Portal' : 'Compliance Management Portal'}
+            </span>
           </div>
-          <div className="d-flex align-items-center gap-2">
-            <div className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
-              style={{ width: '36px', height: '36px', background: '#1a1a2e', fontSize: '14px' }}>
-              {initials}
+          <div className="d-flex align-items-center gap-3">
+            <div className="d-flex align-items-center gap-2">
+              <div className="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                style={{ width: '36px', height: '36px', background: '#1a1a2e', fontSize: '14px' }}>
+                {initials}
+              </div>
+              <div className="d-flex flex-column align-items-end">
+                <span className="fw-semibold text-dark small">{email}</span>
+                <span className="text-muted" style={{ fontSize: '0.72rem' }}>{role}</span>
+              </div>
             </div>
-            <div className="d-flex flex-column align-items-end">
-              <span className="fw-semibold text-dark small">{email}</span>
-              <span className="text-muted" style={{ fontSize: '0.72rem' }}>{role}</span>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="btn btn-sm btn-outline-danger fw-semibold"
+              style={{ borderRadius: '6px' }}
+              title="Sign out"
+            >
+              <i className="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
           </div>
         </header>
 
