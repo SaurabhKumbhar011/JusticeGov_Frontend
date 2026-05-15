@@ -1,6 +1,7 @@
 // =======================
 // ✅ CITIZEN MENU
 // =======================
+import { courtclerkMenu } from "./courtclerkMenu";
 export const citizenMenu = [
   { label: "📊 My Profile",   path: "/citizenregister/my-profile" },
   { label: "📄 My Documents", path: "/citizenregister/my-documents" },
@@ -56,6 +57,8 @@ const roleMenus = {
   ADMIN: registrarMenu,
 
   COMPLIANCE_OFFICER: complianceOfficerMenu,
+
+  COURT_CLERK: courtclerkMenu,
 
   RESEARCHER: researcherMenu,
 };

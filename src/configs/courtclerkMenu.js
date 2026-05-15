@@ -1,7 +1,7 @@
-export const judgeMenu = [
+export const courtclerkMenu = [
   {
     label: "📅 Hearings",
-    path: "/hearings"
+    path: "/hearing-dashboard"
   },
   {
     label: "🔬 Research",

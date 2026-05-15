@@ -1,5 +1,63 @@
+// import { useEffect } from "react";
+// import { useParams } from "react-router-dom";
+// import { useHearings } from "../../../hooks/useHearings";
+
+// import HearingForm from "../components/HearingForm";
+// import HearingTable from "../components/HearingTable";
+// import DashboardStats from "../../../components/stats/DashboardStats";
+
+// const Hearings = () => {
+//   const { caseId } = useParams();
+
+//   const {
+//     hearings,
+//     loadHearings,
+//     addHearing,
+//     updateStatus
+//   } = useHearings();
+
+//   useEffect(() => {
+//     loadHearings(caseId || 1);
+//   }, [caseId]);
+
+//   return (
+//     <div className="dashboard container-fluid">
+
+//       {/* Stats */}
+//       <DashboardStats hearings={hearings} projects={[]} grants={[]} />
+
+//       <h2 className="mb-4">
+//         <i className="bi bi-calendar-event me-2"></i>
+//         Hearing Management
+//       </h2>
+
+//       <div className="card-custom">
+//         <h5 className="section-title">Schedule Hearing</h5>
+//         <HearingForm onSubmit={addHearing} />
+//       </div>
+
+//       <div className="card-custom">
+//         <h5 className="section-title">Hearing History</h5>
+
+//         {hearings.length === 0 ? (
+//           <p className="text-muted">No hearings found</p>
+//         ) : (
+//           <HearingTable
+//             hearings={hearings}
+//             onUpdateStatus={updateStatus}
+//           />
+//         )}
+//       </div>
+
+//     </div>
+//   );
+// };
+
+// export default Hearings;
+
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+
 import { useHearings } from "../../../hooks/useHearings";
 
 import HearingForm from "../components/HearingForm";
@@ -7,23 +65,27 @@ import HearingTable from "../components/HearingTable";
 import DashboardStats from "../../../components/stats/DashboardStats";
 
 const Hearings = () => {
+
   const { caseId } = useParams();
 
   const {
     hearings,
     loadHearings,
-    addHearing,
-    updateStatus
+    scheduleHearing,
+    updateHearingStatus,
+    recordProceedings
   } = useHearings();
 
+  // ✅ LOAD HEARINGS (history based on case)
   useEffect(() => {
-    loadHearings(caseId || 1);
+    const id = caseId || 1; // default fallback
+    loadHearings(id);
   }, [caseId]);
 
   return (
     <div className="dashboard container-fluid">
 
-      {/* Stats */}
+      {/* ✅ DASHBOARD STATS */}
       <DashboardStats hearings={hearings} projects={[]} grants={[]} />
 
       <h2 className="mb-4">
@@ -31,11 +93,21 @@ const Hearings = () => {
         Hearing Management
       </h2>
 
+      {/* ✅ SCHEDULE HEARING */}
       <div className="card-custom">
         <h5 className="section-title">Schedule Hearing</h5>
-        <HearingForm onSubmit={addHearing} />
+
+        <HearingForm
+          onSubmit={(data) =>
+            scheduleHearing({
+              ...data,
+              caseId: caseId ? Number(caseId) : data.caseId
+            })
+          }
+        />
       </div>
 
+      {/* ✅ HEARING HISTORY */}
       <div className="card-custom">
         <h5 className="section-title">Hearing History</h5>
 
@@ -44,7 +116,16 @@ const Hearings = () => {
         ) : (
           <HearingTable
             hearings={hearings}
-            onUpdateStatus={updateStatus}
+
+            // ✅ STATUS UPDATE (Adjourn / Complete)
+            onUpdateStatus={(id, status) =>
+              updateHearingStatus(id, status)
+            }
+
+            // ✅ PROCEEDINGS (notes)
+            onSaveProceedings={(id, notes) =>
+              recordProceedings(id, notes)
+            }
           />
         )}
       </div>
