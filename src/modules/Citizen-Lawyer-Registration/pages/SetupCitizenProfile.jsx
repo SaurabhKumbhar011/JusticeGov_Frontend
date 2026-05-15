@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { decodeToken } from '../../../utils/token'; 
 import { registerCitizen } from '../axios/registrationApi';
+
+// 🚀 Embedded your exact token logic here to prevent "Module Not Found" crashes!
+const decodeToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    const payload = token.split(".")[1];
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(base64));
+  } catch (e) {
+    console.error("Failed to decode token", e);
+    return null;
+  }
+};
 
 export default function SetupCitizenProfile() {
   const navigate = useNavigate();
@@ -22,6 +35,7 @@ export default function SetupCitizenProfile() {
   useEffect(() => {
     const decoded = decodeToken();
     if (decoded) {
+      // Safely check all possible ID fields from your payload
       const uid = decoded.userId || decoded.id || decoded.sub;
       setFormData(prev => ({ ...prev, userId: uid }));
     } else {
@@ -29,7 +43,6 @@ export default function SetupCitizenProfile() {
     }
   }, []);
 
-  // 🚀 Logic to validate that user is 18+ and date is not future/present
   const validateAge = (birthDate) => {
     const today = new Date();
     const dob = new Date(birthDate);

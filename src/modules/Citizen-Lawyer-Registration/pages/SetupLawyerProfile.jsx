@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { decodeToken } from '../../../utils/token'; 
 import { registerLawyer } from '../axios/registrationApi';
+
+// 🚀 Embedded your exact token logic here to prevent crashes!
+const decodeToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    const payload = token.split(".")[1];
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(base64));
+  } catch (e) {
+    console.error("Failed to decode token", e);
+    return null;
+  }
+};
 
 export default function SetupLawyerProfile() {
   const navigate = useNavigate();

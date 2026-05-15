@@ -165,7 +165,7 @@ export default function MyProfilePage() {
                     </div>
                   )}
                   <div className="col-12">
-                    <label className="form-label small fw-bold">Contact Info</label>
+                    <label className="form-label small fw-bold">Email</label>
                     <input className="form-control" value={editForm.contactInfo || ''}
                       onChange={(e) => setEditForm({ ...editForm, contactInfo: e.target.value })} />
                   </div>
